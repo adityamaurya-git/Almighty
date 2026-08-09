@@ -11,6 +11,7 @@ import { Dashboard } from "../pages/Dashboard"
 import ProtectedRoute from "./ProtectedRoute"
 import OrderHistory from "../pages/OrderHistory"
 import Products from "../pages/Products"
+import Analytics from "../pages/Analytics"
 
 export const MainRoutes = () =>{
 
@@ -30,6 +31,7 @@ export const MainRoutes = () =>{
 
             <Route path="/almighty/partner/dashboard/history" element={<OrderHistory />} />
             <Route path="/almighty/partner/dashboard/products" element={<Products />} />
+            <Route path="/almighty/partner/dashboard/analytics" element={<Analytics />} />
         </Routes>
     </>)
 }

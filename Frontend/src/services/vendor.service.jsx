@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 
@@ -70,4 +70,38 @@ export const getVendorByUID = async (uid) => {
 
     };
 
+};
+
+
+export const subscribeVendorByUID = (uid, callback) => {
+
+    const q = query(
+        collection(db, "vendors"),
+        where("uid", "==", uid)
+    );
+
+    return onSnapshot(q, (snapshot) => {
+
+        if (snapshot.empty) {
+            callback?.(null);
+            return;
+        }
+
+        const vendorDoc = snapshot.docs[0];
+
+        callback({
+            id: vendorDoc.id,
+            ...vendorDoc.data()
+        });
+
+    });
+
+};
+
+
+
+export const updateAutoAccept = async (vendorId , value) =>{
+    await updateDoc(doc(db , "vendors" , vendorId),{
+        autoAcceptOrders : value
+    });
 };

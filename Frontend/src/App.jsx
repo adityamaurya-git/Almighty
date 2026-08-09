@@ -17,8 +17,7 @@ export const App = () =>{
   return(<>
     <Toaster position="top-right" />
   
-    <main className="w-full h-full  font-gilroyBold">
-      {/* <Navbar /> */}
+    <main className="w-full h-full font-gilroyBold">
       <MainRoutes />
       <Footer />
     </main>

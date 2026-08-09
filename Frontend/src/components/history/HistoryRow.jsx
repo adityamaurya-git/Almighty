@@ -1,10 +1,12 @@
 const HistoryRow = ({ order }) => {
 
+    // console.log(order);
+
     return (
         <tr className="border-b border-primary-bg2-color text-center">
             <td className="p-4"> {order.orderId} </td>
 
-            <td className="p-4"> ₹{order.total} </td>
+            <td className="p-4"> ₹{order.subtotal} </td>
 
             {/* <td className="p-4"> {order.paymentStatus} </td> */}
 

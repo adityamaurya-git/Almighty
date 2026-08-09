@@ -15,61 +15,44 @@ const Products = () => {
     const [filter, setFilter] = useState("All");
     const [ showAdd , setShowAdd ] = useState(false);
 
+
     const filteredProducts = useMemo(() => {
 
         let data = [...products];
-
         if (filter === "Available") {
-
             data = data.filter(
-
                 p => p.status === "active"
-
             );
-
         }
 
         if (filter === "Unavailable") {
-
             data = data.filter(
-
-                p => p.available === false
-
+                p => p.status === "out_of_stock"
             );
-
         }
 
         if (search.trim()) {
-
             data = data.filter(product =>
-
                 product.name
-
                     ?.toLowerCase()
-
                     .includes(
-
                         search.toLowerCase()
-
                     )
-
             );
-
         }
-
         return data;
-
+        
     }, [products, filter, search]);
 
     return (<>
 
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
             <Sidebar />
 
             <div className="flex flex-col w-full">
                 <Header />
 
-                <div className="p-6">
+                <div className="w-full h-[90vh] overflow-auto p-6">
 
                     <div className="flex justify-between">
                         <ProductFilters

@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import { auth } from "../firebase/firebase";
-import { getVendorByUID } from "../services/vendor.service";
+import { subscribeVendorByUID } from "../services/vendor.service";
 
 export const AuthContext = createContext();
 
@@ -14,31 +14,32 @@ export const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {
+        let unsubscribeVendor = null;
 
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
 
             if (user) {
 
                 setUser(user);
-                const vendorData = await getVendorByUID(user.uid);
-
-                if (vendorData) {
-                    setVendor(vendorData);
-                }
-                else {
-                    setVendor(null);
-                }
-
+                unsubscribeVendor = subscribeVendorByUID(
+                    user.uid,
+                    (vendorData) => {
+                        setVendor(vendorData);
+                        setLoading(false);
+                    }
+                );
             }
             else {
                 setVendor(null);
                 setUser(null);
+                setLoading(false);
             }
-
-            setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            if(unsubscribeVendor) unsubscribeVendor();
+        }
 
     }, []);
 
@@ -46,12 +47,13 @@ export const AuthProvider = ({ children }) => {
         setVendor(vendorData);
     }
 
-    const refreshVendor = async () => {
+    // const refreshVendor = async () => {
 
-        if (!auth.currentUser) return;
-        const vendorData = await getVendorByUID(auth.currentUser.uid);
-        setVendor(vendorData);
-    };
+    //     if (!auth.currentUser) return;
+    //     const vendorData = await getVendorByUID(auth.currentUser.uid);
+    //     setVendor(vendorData);
+    // };
+
 
     const logoutVendor = async () => {
 
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }) => {
         setVendor(null);
     }
 
-    const value = {user , vendor, loginVendor, logoutVendor, loading , refreshVendor};
+    const value = {user , vendor, loginVendor, logoutVendor, loading};
 
     return (
 

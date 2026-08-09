@@ -1,20 +1,24 @@
 import { useState } from "react";
+import { submitVendorApplication } from "../services/VendorApplication.service";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
 
   const foodStores = [
-    "Restaurant",
+    "Food Delivery",
     "Bakery"
   ];
 
   const [formData, setFormData] = useState({
 
-    storeName: "",
+    shopName: "",
+    ownerName: "",
     address: "",
-    latitude: null,
-    longitude: null,
-    mobile: "",
-    storeType: "",
+    lat: null,
+    lng: null,
+    phone: "",
+    category: "",
     panCard: "",
     aadhaarNumber: "",
     gstNumber: "",
@@ -26,13 +30,19 @@ export const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const validate = () => {
     let newErrors = {};
 
     // Store Name
-    if (!formData.storeName.trim()) {
-      newErrors.storeName = "Store name is required";
+    if (!formData.shopName.trim()) {
+      newErrors.shopName = "Shop name is required";
+    }
+
+    // Owner Name
+    if (!formData.ownerName.trim()) {
+      newErrors.ownerName = "Owner name is required";
     }
 
     // Address
@@ -41,13 +51,13 @@ export const Register = () => {
     }
 
     // Mobile
-    if (!/^[6-9]\d{9}$/.test(formData.mobile)) {
-      newErrors.mobile = "Enter a valid 10-digit mobile number";
+    if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Enter a valid 10-digit mobile number";
     }
 
-    // Store Type
-    if (!formData.storeType) {
-      newErrors.storeType = "Please select a store type";
+    // Category
+    if (!formData.category) {
+      newErrors.category = "Please select a store type";
     }
 
     //Aadhaar Number (optional)
@@ -72,7 +82,7 @@ export const Register = () => {
 
     // FSSAI
     if (
-      foodStores.includes(formData.storeType) &&
+      foodStores.includes(formData.category) &&
       !formData.fssaiLicense
     ) {
       newErrors.fssaiLicense =
@@ -113,11 +123,10 @@ export const Register = () => {
     }
 
     navigator.geolocation.getCurrentPosition((position) => {
-
       setFormData(prev => ({
         ...prev,
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
       }));
     }, () => {
       toast.error("Unable to fetch location");
@@ -125,13 +134,20 @@ export const Register = () => {
   };
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validate()) {
-      console.log("Form Data:", formData);
-      alert("Form Submitted Successfully!");
+    if (!validate()) return;
+
+    try {
+      await submitVendorApplication(formData);
+      toast.success("Application submitted successfully!");
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit application. Please try again.");
     }
+
   };
 
   const handleChange = (e) => {
@@ -173,20 +189,37 @@ export const Register = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
 
-          {/* Store Name */}
+          {/* Shop Name */}
+          <div className="grid gap-6 md:grid-cols-2">
+
           <div>
             <label className="mb-2 block text-sm font-medium text-white sm:text-base">
-              Store Name *
+              Shop Name *
             </label>
             <input
               type="text"
-              name="storeName"
-              value={formData.storeName}
+              name="shopName"
+              value={formData.shopName}
               onChange={handleChange}
-              className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
-            />
-            <InputError error={errors.storeName} />
+              className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
+              />
+            <InputError error={errors.shopName} />
           </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white sm:text-base">
+              Owner Name *
+            </label>
+            <input
+              type="text"
+              name="ownerName"
+              value={formData.ownerName}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
+              />
+            <InputError error={errors.ownerName} />
+          </div>
+        </div>
 
           {/* Address */}
           <div>
@@ -198,17 +231,17 @@ export const Register = () => {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+              className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10  sm:text-base"
             />
             <div className="mt-3 flex items-center gap-3">
               <button
                 type="button"
                 onClick={getCurrentLocation}
-                className="rounded-lg cursor-pointer bg-red-600 px-4 py-2 text-white"
+                className="rounded-lg cursor-pointer bg-primary-bg2-color px-4 py-2 text-white"
               >📍 Detect Current Location
               </button>
               {
-                formData.latitude && (
+                formData.lat && (
                   <span className="text-sm text-green-500">
                     Location Captured
                   </span>
@@ -225,27 +258,27 @@ export const Register = () => {
               </label>
               <input
                 type="tel"
-                name="mobile"
-                value={formData.mobile}
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10  sm:text-base"
               />
-              <InputError error={errors.mobile} />
+              <InputError error={errors.phone} />
             </div>
 
             <div>
               <label className="mb-2 block text-sm font-medium text-white sm:text-base">
-                Store Type *
+                Category *
               </label>
 
               <select
-                name="storeType"
-                value={formData.storeType}
+                name="category"
+                value={formData.category}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
               >
                 <option value="">Select Store Type</option>
-                <option>Restaurant</option>
+                <option>Food Delivery</option>
                 <option>Electronics</option>
                 <option>Kirana Store</option>
                 <option>Medical</option>
@@ -254,7 +287,7 @@ export const Register = () => {
                 <option>Bakery</option>
               </select>
 
-              <InputError error={errors.storeType} />
+              <InputError error={errors.category} />
             </div>
 
             <div>
@@ -268,7 +301,7 @@ export const Register = () => {
                 name="aadhaarNumber"
                 value={formData.aadhaarNumber}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-white"
+                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
               />
               <InputError error={errors.aadhaarNumber} />
             </div>
@@ -287,7 +320,7 @@ export const Register = () => {
                     panCard: e.target.value.toUpperCase(),
                   })
                 }
-                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
               />
               <InputError error={errors.panCard} />
             </div>
@@ -306,13 +339,13 @@ export const Register = () => {
                     gstNumber: e.target.value.toUpperCase(),
                   })
                 }
-                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
               />
               <InputError error={errors.gstNumber} />
             </div>
 
             {
-              ["Restaurant", "Bakery"].includes(formData.storeType) && (
+              ["Food Delivery", "Bakery"].includes(formData.category) && (
                 <div>
                   <label className="mb-2 block text-sm font-medium text-white">
                     FSSAI License *
@@ -347,7 +380,7 @@ export const Register = () => {
                   placeholder="Account Holder Name"
                   name="accountHolderName"
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
                 />
                 <InputError error={errors.accountHolderName} />
               </div>
@@ -358,7 +391,7 @@ export const Register = () => {
                   placeholder="Account Number"
                   name="accountNumber"
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
                 />
                 <InputError error={errors.accountNumber} />
               </div>
@@ -374,7 +407,7 @@ export const Register = () => {
                       ifscCode: e.target.value.toUpperCase(),
                     })
                   }
-                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 sm:text-base"
+                  className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-3 text-sm text-white outline-none transition focus:border-primary-bg2-color focus:ring-2 focus:ring-partner-primary-bg-color/10 sm:text-base"
                 />
                 <InputError error={errors.ifscCode} />
               </div>
@@ -390,7 +423,7 @@ export const Register = () => {
                 name="consent"
                 checked={formData.consent}
                 onChange={handleChange}
-                className="mt-1 h-4 w-4 rounded border-zinc-500 text-red-600 focus:ring-red-500"
+                className="mt-1 h-4 w-4 rounded border-zinc-500 text-red-600 focus:ring-primaborder-primary-bg2-color"
               />
 
               <span className="leading-6 text-zinc-200">
@@ -410,7 +443,7 @@ export const Register = () => {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-red-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900 sm:py-4 sm:text-base"
+            className="w-full rounded-xl bg-primary-bg2-color px-6 py-3.5 text-sm font-semibold text-black transition cursor-pointer hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-primaborder-primary-bg2-color focus:ring-offset-2 focus:ring-offset-zinc-900 sm:py-4 sm:text-base"
           >
             Submit Registration
           </button>

@@ -105,13 +105,13 @@ const OrderHistory = () => {
 
     return (<>
 
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
             <Sidebar />
 
             <div className="flex flex-col w-full">
                 <Header orders={orders} />
 
-                <div className="p-6">
+                <div className="w-full h-[90vh] overflow-auto p-6">
 
                     <DateFilters dateFilter={dateFilter} setDateFilter={setDateFilter} />
 

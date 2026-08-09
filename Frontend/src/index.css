@@ -10,6 +10,16 @@
   src: url("/fonts/Gilroy-Light.otf") format("truetype");
 }
 
+@font-face{
+  font-family:"gilroySemiBold";
+  src: url("/fonts/Gilroy-semibold.ttf") format("truetype");
+}
+
+@font-face{
+  font-family:"niko";
+  src:url("/fonts/niko.otf") format("truetype");
+}
+
 
 @layer utilities {
   .text-outline {
@@ -27,14 +37,17 @@
 
     --font-gilroyBold: "gilroyBold", sans-serif;
     --font-gilroyLight: "gilroyLight", sans-serif;
+    --font-gilroySemiBold: "gilroySemiBold", sans-serif;
+    --font-niko: "niko", sans-serif;
 
     /* HOME PAGE COLOR */
     /* --color-primary-bg-color: #F4C443; */
     --color-primary-bg-color: #D51519;
+    /* --color-primary-bg2-color:#e5de00 ;  */
+    --color-primary-bg2-color:#FFC903 ;  /*new mustard yellow*/
 
-    --color-primary-bg2-color:#e5de00 ; 
-
-    --color-secondary-bg-color:#FEF2E0 ;
+    /* --color-secondary-bg-color:#FEF2E0 ; */
+    --color-secondary-bg-color:#FEF6DD ;
     --color-secondary-bg2-color:#232222 ;
 
     --color-primary-text-color:#FFF9E7;
@@ -73,6 +86,7 @@
 .heroSection{
     /* background-image: url("/images/main-bg.png"); */
     /* background-color: var(--color-primary-bg-color); */
+    background-image: url("/images/bg-yellow.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

@@ -16,7 +16,7 @@ const ProductFilters = ({ filter, setFilter }) => {
                     <button
                         key={item}
                         onClick={() => setFilter(item)}
-                        className={`px-3 py-1 rounded-lg
+                        className={`px-2 py-0 rounded-lg
                         ${filter === item ?
 
                                 "bg-primary-bg2-color text-black"

@@ -13,7 +13,7 @@ const Header = () => {
 
     return (
 
-        <header className=" flex flex-col gap-4 border-b border-slate-300 bg-white px-4 py-4 sm:px-6 lg:h-20 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <header className=" flex flex-col gap-4 border-b border-slate-300 bg-white px-4 py-4 sm:px-6 lg:h-20 md:flex-row md:items-center md:justify-between lg:px-8">
 
             <div>
                 <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>

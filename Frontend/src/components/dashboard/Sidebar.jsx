@@ -31,7 +31,7 @@ const Sidebar = () => {
     const menus = [
         {
             title: "Dashboard",
-            path: "/",
+            path: "/almighty/partner/dashboard",
             icon: <FiHome />
         },
         {
@@ -46,7 +46,7 @@ const Sidebar = () => {
         },
         {
             title: "Analytics",
-            path: "/analytics",
+            path: "/almighty/partner/dashboard/analytics",
             icon: <FiBarChart2 />
         },
         {

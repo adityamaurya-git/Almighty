@@ -5,10 +5,6 @@ export const Footer = () =>{
 
     return(<>
         <section className="relative w-full bg-secondary-bg2-color">
-            {/* <div className="relative  ">
-                <img className="absolute -top-8 md:-top-17 lg:-top-27" src="/images/footer-top-bg1.png" alt="" />
-            </div>     */}
-
             <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 pb-10 pt-16 sm:px-6 sm:pb-12 sm:pt-20 lg:px-10 lg:pb-16 lg:pt-24">
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
@@ -16,6 +12,7 @@ export const Footer = () =>{
                             <Link to="/">Home</Link>
                             <Link to="/">Services</Link>
                             <Link to="/">GOD'S Plan</Link>
+                            <Link to="">Admin Panel</Link>
                         </div>
                         <div className="flex flex-col gap-3 text-sm font-medium text-secondary-bg-color sm:text-base">
                             <Link to="/almighty/about-us">About Us</Link>
