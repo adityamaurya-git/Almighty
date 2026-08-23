@@ -16,13 +16,13 @@ const Sidebar = () => {
 
     const navigate = useNavigate();
 
-    const { logoutVendor } = useAuth();
+    const { logoutOutlet } = useAuth();
 
     const handleLogout = async () => {
 
         await logout();
 
-        logoutVendor();
+        logoutOutlet();
 
         navigate("/");
 
@@ -49,11 +49,11 @@ const Sidebar = () => {
             path: "/almighty/partner/dashboard/analytics",
             icon: <FiBarChart2 />
         },
-        {
-            title: "Settings",
-            path: "/settings",
-            icon: <FiSettings />
-        }
+        // {
+        //     title: "Settings",
+        //     path: "/settings",
+        //     icon: <FiSettings />
+        // }
     ];
 
     return (
@@ -67,6 +67,7 @@ const Sidebar = () => {
                         <NavLink
                             key={menu.title}
                             to={menu.path}
+                            end={menu.path === "/almighty/partner/dashboard"}
                             className={({ isActive }) =>
                                 `flex shrink-0 items-center gap-3 rounded-full px-4 py-3 text-sm whitespace-nowrap hover:bg-gray-300 lg:rounded-none lg:px-6 lg:py-4 lg:text-base ${
                                     isActive ? "bg-primary-bg2-color font-semibold text-black lg:bg-primary-bg2-color" : "text-slate-700"

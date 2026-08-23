@@ -1,7 +1,5 @@
 import { db } from "../firebase/firebase";
-
-
-import {collection, getDocs, getDoc, doc, setDoc, updateDoc, serverTimestamp, arrayUnion, } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, setDoc, updateDoc, serverTimestamp, arrayUnion, } from "firebase/firestore";
 
 
 // -------------------------------
@@ -19,9 +17,9 @@ const getDistanceKm = (lat1, lng1, lat2, lng2) => {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+    Math.cos(deg2rad(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
 
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
@@ -37,6 +35,8 @@ export const dispatchToNearestRiders = async (
   vendorLng,
   orderData
 ) => {
+  console.log("dispatchToNearestRiders called");
+  console.log(orderId);
   try {
     const ridersSnapshot = await getDocs(collection(db, "riders"));
 
@@ -81,7 +81,10 @@ export const dispatchToNearestRiders = async (
       });
     });
 
-    if (ridersWithDistance.length === 0) return;
+    if (ridersWithDistance.length === 0){
+      console.log("No eligible riders found");
+      return;
+    }
 
     ridersWithDistance.sort(
       (a, b) => a.distance - b.distance
@@ -91,10 +94,12 @@ export const dispatchToNearestRiders = async (
 
     const eligibleIds = nearest.map((r) => r.riderId);
 
+
+
     //------------------------------------------------
     // Create order_dispatches document
     //------------------------------------------------
-
+    console.log("Creating order_dispatches document...");
     await setDoc(doc(db, "order_dispatches", orderId), {
       orderId,
       vendorId,
@@ -114,8 +119,8 @@ export const dispatchToNearestRiders = async (
 
       createdAt: serverTimestamp(),
     });
-
-    console.log("Dispatched to", eligibleIds.length, "riders");
+    console.log("order_dispatches created successfully");
+    // console.log("Dispatched to", eligibleIds.length, "riders");
 
     //------------------------------------------------
     // Retry after 2 minutes
@@ -187,8 +192,8 @@ export const dispatchToNearestRiders = async (
         if (newEligible.length === 0) return;
 
         await updateDoc(dispatchRef, {
-        //   eligibleRiders: FieldValue.arrayUnion(...newEligible),
-        eligibleRiders: arrayUnion(...newEligible),
+          //   eligibleRiders: FieldValue.arrayUnion(...newEligible),
+          eligibleRiders: arrayUnion(...newEligible),
         });
 
         console.log("Retry dispatch completed");

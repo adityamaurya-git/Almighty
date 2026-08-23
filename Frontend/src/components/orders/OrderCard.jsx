@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
 import {
     updateOrderStatus,
     extendPreparationTime,
@@ -8,15 +7,14 @@ import {
 } from "../../services/order.service";
 
 import { STATUS } from "../../utils/orderStatus";
-
 import StatusBadge from "./StatusBadge";
-
 import usePreparationTimer from "../../hooks/usePreparationTimer";
-
 import PreparationTimeModal from "./PreparationModal";
 
 
 const OrderCard = ({ order }) => {
+
+    // console.log("order in OrderCard", order);
 
     const { remaining, minutes, seconds, isFinished } = usePreparationTimer(
         order.acceptedAt,
@@ -24,10 +22,10 @@ const OrderCard = ({ order }) => {
     );
 
     const [showPreparationPopup, setShowPreparationPopup] = useState(false);
+    const preparationCompletedRef = useRef(false);
 
     const handleStatus = async (status) => {
         try {
-
             await updateOrderStatus(order, status);
         }
         catch (error) {
@@ -36,46 +34,32 @@ const OrderCard = ({ order }) => {
 
     };
 
+    useEffect(() => {
 
-    // const remaining = usePreparationTimer(order.acceptedAt, order.prepTime);
-    // const [showPreparationModal, setShowPreparationModal] = useState(false);
-    // const [timerFinished, setTimerFinished] = useState(false);
+        if (order.status !== STATUS.CONFIRMED ||
+            !order.acceptedAt ||
+            order.extensionPromptShown
+        ) return;
 
+        if (
+            remaining <= 5 * 60 * 1000 &&
+            remaining > 0
+        ) {
+            setShowPreparationPopup(true);
+            markExtensionPromptShown(order.id);
+        }
+    }, [remaining, order.status, order.acceptedAt, order.extensionPromptShown, order.id]);
 
     useEffect(() => {
 
         if (
-
             order.status !== STATUS.CONFIRMED ||
-
-            !order.acceptedAt ||
-
-            order.extensionPromptShown
-
+            !isFinished
         ) return;
 
-        if (
+        completePreparation(order);
 
-            remaining <= 5 * 60 * 1000 &&
-
-            remaining > 0
-
-        ) {
-
-            setShowPreparationPopup(true);
-
-            markExtensionPromptShown(order.id);
-
-        }
-
-    }, [
-
-        remaining,
-
-        order
-
-    ]);
-    // console.log("remaining = ", remaining);
+    }, [isFinished]);
 
 
     return (
@@ -102,7 +86,7 @@ const OrderCard = ({ order }) => {
                         <div className="mt-5 rounded-xl flex items-center gap-2 bg-blue-50 px-4 py-2">
                             ⏱
                             <h2 className="text-xl font-bold text-blue-600 ">
-                                
+
                                 {
                                     String(minutes).padStart(2, "0")
                                 }
@@ -153,27 +137,14 @@ const OrderCard = ({ order }) => {
                     order.status === STATUS.CONFIRMED && (
                         <>
                             {
-                                !isFinished ?
-                                    (
-                                        <button
-                                            disabled
-                                            className="rounded bg-gray-300 px-5 py-2 text-gray-600"
-                                        >
-                                            Preparing...
-                                        </button>
-
-                                    )
-                                    :
-                                    (
-                                        <button
-                                            onClick={async () => {
-                                                await completePreparation(order);
-                                            }}
-                                            className="rounded bg-blue-600 px-5 py-2 text-white"
-                                        >
-                                            Ready For Pickup
-                                        </button>
-                                    )
+                                order.status === STATUS.CONFIRMED && (
+                                    <button
+                                        disabled
+                                        className="rounded bg-gray-300 px-5 py-2 text-gray-600"
+                                    >
+                                        Preparing...
+                                    </button>
+                                )
                             }
                         </>
                     )
@@ -212,6 +183,22 @@ const OrderCard = ({ order }) => {
                 }
 
             </div>
+
+            {
+                order.dispatchStatus === "searching" && (
+
+                    <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+
+                        <p className="font-semibold text-yellow-700">
+
+                            Searching nearby riders...
+
+                        </p>
+
+                    </div>
+
+                )
+            }
 
             {order.dispatchStatus === "assigned" && (
                 <div className="mt-4 rounded-lg bg-green-50 border border-green-200 p-3">

@@ -37,12 +37,30 @@ const ProductCard = ({ product }) => {
     };
 
     const handleToggle = async () => {
-        await toggleStock(
-            product.id,
-            product.status === "active"
-                ? "out_of_stock"
-                : "active"
-        )
+
+        try {
+
+            const newAvailable = !product.available;
+
+            await toggleStock(
+                product.ownerId,
+                product.businessId,
+                product.outletId,
+                product.productId,
+                newAvailable
+            )
+
+            toast.success(
+                newAvailable
+                    ? "Product is now available"
+                    : "Product is now unavailable"
+            );
+
+        } catch (err) {
+            console.error("Failed to update availability:", err);
+            toast.error("Unable to update availability");
+        }
+
     };
 
 
@@ -51,7 +69,7 @@ const ProductCard = ({ product }) => {
         <div className="overflow-hidden rounded-xl  shadow transition hover:shadow-lg border border-primary-bg2-color">
             <div className="relative">
                 <img
-                    src={product.images || "https://placehold.co/600x400?text=No+Image"}
+                    src={product.images?.[0] || "https://placehold.co/600x400?text=No+Image"}
                     alt={product.name}
                     className="h-36 w-full object-cover"
                 />
@@ -70,13 +88,13 @@ const ProductCard = ({ product }) => {
 
                     <span
                         className={`rounded-lg px-3 py-1 text-xs font-semibold
-                        ${product.status === "active"
+                        ${product.available
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"
                             }`}
                     >
 
-                        {product.status === "active"
+                        {product.available
                             ? "Available"
                             : "Unavailable"}
 
@@ -87,24 +105,52 @@ const ProductCard = ({ product }) => {
                 <p className="text-sm text-gray-500">{product.category}</p>
 
                 <div className="mt-4 flex items-center justify-between">
-                    <h3 className="text-2xl font-bold">₹{product.price}</h3>
+                    {/* PRICE */}
+                    <div className="flex items-baseline gap-2">
 
+                        {product.discountPrice ? (
+                            <>
+                                {/* Discounted price */}
+                                <span className="text-2xl font-bold text-black">
+                                    ₹{product.discountPrice}
+                                </span>
 
+                                {/* Original price */}
+                                <span className="text-sm font-medium text-gray-400 line-through">
+                                    ₹{product.price}
+                                </span>
+                            </>
+                        ) : (
+                            /* Normal price when there is no discount */
+                            <span className="text-2xl font-bold text-black">
+                                ₹{product.price}
+                            </span>
+                        )}
 
+                    </div>
+                    {/* ACTION BUTTONS */}
                     <div className="flex gap-4">
-                        <div className="flex"
+
+                        <div
+                            className="flex"
                             onClick={() => setShowEdit(true)}
                         >
                             <button className="rounded-lg bg-primary-bg2-color p-2 text-black cursor-pointer">
                                 <FiEdit2 />
                             </button>
                         </div>
-                        <div className="flex"
-                            onClick={() => setShowDelete(true)}>
-                            <button className="rounded-lg bg-primary-bg2-color p-2 text-black cursor-pointer">
+
+                        <div
+                            className="flex"
+                            onClick={() => setShowDelete(true)}
+                        >
+                            <button
+                                className="rounded-lg bg-primary-bg2-color p-2 text-black cursor-pointer"
+                            >
                                 <FiTrash2 />
                             </button>
                         </div>
+
                     </div>
 
                 </div>

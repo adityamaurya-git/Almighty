@@ -1,17 +1,5 @@
 import React from "react";
-import {
-  ShoppingCart,
-  UtensilsCrossed,
-  Pill,
-  Smartphone,
-  Clock3,
-  Store,
-  Truck,
-  ShieldCheck,
-  Target,
-  Eye,
-  ArrowRight,
-} from "lucide-react";
+import { ShoppingCart, UtensilsCrossed, Pill, Smartphone, Clock3, Store, Truck, ShieldCheck, Target, Eye, ArrowRight, } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const categories = [
@@ -72,14 +60,14 @@ export const About = () => {
       <section className=" border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 py-24">
 
-          <span className="inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-partner-primary-bg-color text-sm">
+          <span className="inline-block rounded-lg border bg-primary-bg2-color px-4 py-2 text-black text-sm">
             About ALMIGHTY
           </span>
 
           <h1 className="mt-6 text-5xl md:text-6xl font-bold leading-tight">
             Everything You Need,
             <br />
-            <span className="text-partner-primary-bg-color">
+            <span className="text-primary-bg2-color">
               Delivered in Minutes.
             </span>
           </h1>
@@ -92,12 +80,8 @@ export const About = () => {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <button className="rounded-xl bg-partner-primary-bg-color px-7 py-4 font-semibold hover:bg-red-700 transition">
+            <Link to="/" className="rounded-lg border bg-primtext-primary-bg2-color px-7 py-4 font-semibold hover:bg-primary-bg2-color transition">
               Start Shopping
-            </button>
-
-            <Link to="/almighty/policies" className="rounded-xl border border-neutral-700 px-7 py-4 hover:border-red-500 transition">
-              Learn More
             </Link>
           </div>
 
@@ -132,33 +116,33 @@ export const About = () => {
 
         </div>
 
-        <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-10">
+        <div className="rounded-3xl border text-white border-neutral-800 bg-neutral-900 p-10">
 
           <div className="grid grid-cols-2 gap-8">
 
             <div>
-              <h3 className="text-5xl font-bold text-partner-primary-bg-color">100%</h3>
+              <h3 className="text-5xl font-bold text-primary-bg2-color">100%</h3>
               <p className="mt-3">
                 Transparent Pricing
               </p>
             </div>
 
             <div>
-              <h3 className="text-5xl font-bold text-partner-primary-bg-color">Fast</h3>
+              <h3 className="text-5xl font-bold text-primary-bg2-color">Fast</h3>
               <p className="mt-3">
                 Quick Deliveries
               </p>
             </div>
 
             <div>
-              <h3 className="text-5xl font-bold text-partner-primary-bg-color">Local</h3>
+              <h3 className="text-5xl font-bold text-primary-bg2-color">Local</h3>
               <p className="mt-3">
                 Verified Stores
               </p>
             </div>
 
             <div>
-              <h3 className="text-5xl font-bold text-partner-primary-bg-color">24/7</h3>
+              <h3 className="text-5xl font-bold text-primary-bg2-color">24/7</h3>
               <p className="mt-3">
                 Customer Support
               </p>
@@ -195,7 +179,7 @@ export const About = () => {
                   className="rounded-3xl border border-neutral-800 bg-neutral-950 p-8 hover:border-red-500 transition"
                 >
                   <div className="w-14 h-14 rounded-xl bg-red-500/10 flex items-center  justify-center">
-                    <Icon className="text-partner-primary-bg-color" size={28} />
+                    <Icon className="text-primary-bg2-color" size={28} />
                   </div>
 
                   <h3 className="mt-6 text-2xl font-semibold text-partner-text-color">
@@ -234,7 +218,7 @@ export const About = () => {
                 key={index}
                 className="rounded-3xl border border-neutral-800 p-8 hover:border-red-500 transition"
               >
-                <Icon className="text-partner-primary-bg-color" size={38} />
+                <Icon className="text-primary-bg2-color" size={38} />
 
                 <h3 className="mt-6 text-2xl font-semibold">
                   {feature.title}
@@ -260,7 +244,7 @@ export const About = () => {
 
           <div className="rounded-3xl border border-neutral-800 p-10">
 
-            <Target className="text-partner-primary-bg-color" size={42} />
+            <Target className="text-primary-bg2-color" size={42} />
 
             <h2 className="mt-6 text-3xl font-bold">
               Our Mission
@@ -276,7 +260,7 @@ export const About = () => {
 
           <div className="rounded-3xl border border-neutral-800 p-10">
 
-            <Eye className="text-partner-primary-bg-color" size={42} />
+            <Eye className="text-primary-bg2-color" size={42} />
 
             <h2 className="mt-6 text-3xl font-bold">
               Our Vision
@@ -309,7 +293,7 @@ export const About = () => {
             receive everything you need delivered quickly to your doorstep.
           </p>
 
-          <Link to="/" className="mt-10 inline-flex items-center gap-2 rounded-xl bg-red-600 px-8 py-4 font-semibold hover:bg-red-700 transition">
+          <Link to="/" className="mt-10 inline-flex items-center gap-2 rounded-lg bg-primary-bg2-color px-8 py-4 font-semibold hover:bg-amber-400 transition">
             Explore ALMIGHTY
             <ArrowRight size={20} />
           </Link>

@@ -23,6 +23,25 @@ export const getVendorByPhone = async (phone) => {
 };
 
 
+export const getVendorByEmail = async (email) => {
+    const q = query(
+        collection(db, "vendors"),
+        where("email" , "==" , email.toLowerCase().trim())
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+        return null;
+    }
+
+    const vendorDoc = snapshot.docs[0];
+
+    return {
+        id: vendorDoc.id,
+        ...vendorDoc.data()
+    };
+}
 
 
 
@@ -37,8 +56,6 @@ export const saveVendorUID = async (vendorId, uid) => {
     });
 
 };
-
-
 
 
 
@@ -100,8 +117,13 @@ export const subscribeVendorByUID = (uid, callback) => {
 
 
 
-export const updateAutoAccept = async (vendorId , value) =>{
-    await updateDoc(doc(db , "vendors" , vendorId),{
-        autoAcceptOrders : value
-    });
-};
+// previous code
+
+// export const updateAutoAccept = async (vendorId , value) =>{
+//     await updateDoc(doc(db , "vendors" , vendorId),{
+//         autoAcceptOrders : value
+//     });
+// };
+
+// outlet based code
+

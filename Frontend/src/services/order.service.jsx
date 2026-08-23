@@ -1,29 +1,19 @@
-import {
-    collection,
-    query,
-    where,
-    onSnapshot,
-    doc,
-    updateDoc,
-    orderBy,
-    serverTimestamp
-} from "firebase/firestore";
-
+import { collection, query, where, onSnapshot, doc, updateDoc, orderBy, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { dispatchToNearestRiders } from "./dispatch.service";
 import { STATUS } from "../utils/orderStatus";
 
 
 
-export const subscribeOrders = (vendorId, callback) => {
+export const subscribeOrders = (outletId, callback) => {
 
     const q = query(
         collection(db, "orders"),
-        where("vendorId", "==", vendorId),
+        where("outletId", "==", outletId),
         orderBy("createdAt", "desc")
     );
 
-    return onSnapshot(q, snapshot => {
+    return onSnapshot(q, (snapshot) => {
 
         const orders = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -32,16 +22,24 @@ export const subscribeOrders = (vendorId, callback) => {
 
         callback(orders);
 
-    });
+    },
+        (error) => {
+            console.log("Error subscribing to orders:", error);
+        }
+    );
 
 };
+
+
+// ==========================
+// ACCEPT ORDER
+// ==========================
 
 
 
 export const updateOrderStatus = async (order, status) => {
 
     const ref = doc(db, "orders", order.id);
-
     const data = {
         status
     };
@@ -55,14 +53,12 @@ export const updateOrderStatus = async (order, status) => {
     if (status === STATUS.CONFIRMED) {
 
         data.acceptedAt = serverTimestamp();
-
         data.prepTime = 15;
-
         data.extensionCount = 0;
-
         data.preparationCompleted = false;
-
         data.extensionPromptShown = false;
+
+        data.dispatchStatus = "searching";
     }
 
     await updateDoc(ref, data);
@@ -73,26 +69,16 @@ export const updateOrderStatus = async (order, status) => {
     ==========================
     */
 
-    if (status === STATUS.PACKED) {
-
+    if (status === STATUS.CONFIRMED) {
         await dispatchToNearestRiders(
-
             order.id,
-
             order.vendorId,
-
             order.vendorLat,
-
             order.vendorLng,
-
             order
-
         );
-
     }
-
 };
-
 
 
 /*
@@ -120,16 +106,13 @@ export const extendPreparationTime = async (order) => {
 };
 
 
-
 export const markExtensionPromptShown = async (orderId) => {
-
     await updateDoc(
         doc(db, "orders", orderId),
         {
             extensionPromptShown: true
         }
     );
-
 };
 
 
@@ -142,13 +125,4 @@ export const completePreparation = async (order) => {
             status: STATUS.PACKED
         }
     );
-
-    await dispatchToNearestRiders(
-        order.id,
-        order.vendorId,
-        order.vendorLat,
-        order.vendorLng,
-        order
-    );
-
 };

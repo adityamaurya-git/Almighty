@@ -12,10 +12,15 @@ import ProtectedRoute from "./ProtectedRoute"
 import OrderHistory from "../pages/OrderHistory"
 import Products from "../pages/Products"
 import Analytics from "../pages/Analytics"
+import ShippingPolicy from "../pages/ShippingPage"
+import RefundCancellationPolicy from "../pages/Refunds&Cancellation"
+import { GodsPlan } from "../pages/GodsPlan"
+import ScrollToTop from "../components/ScrolltoTop"
 
 export const MainRoutes = () =>{
 
     return(<>
+    <ScrollToTop />
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -26,6 +31,9 @@ export const MainRoutes = () =>{
             <Route path="/almighty/policies" element={<TermsAndConditions />} />
             <Route path="/almighty/about-us" element={<About />} />
             <Route path="/almighty/contact-us" element={<ContactUs />} />
+            <Route path="/almighty/gods-plan" element={<GodsPlan />} />
+            <Route path="/almighty/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/almighty/refund&cancellation" element={<RefundCancellationPolicy />} />
 
             <Route path="/almighty/partner/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
 

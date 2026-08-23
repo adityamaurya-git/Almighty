@@ -1,11 +1,11 @@
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
-export const subscribeOrdersAnalytics = (vendorId, callback) => {
+export const subscribeOrdersAnalytics = (outletId , callback) => {
 
     const q = query(
         collection(db, "orders"),
-        where("vendorId", "==", vendorId)
+        where("outletId", "==", outletId)
     );
 
     return onSnapshot(q, snapshot => {
@@ -20,11 +20,11 @@ export const subscribeOrdersAnalytics = (vendorId, callback) => {
 };
 
 
-export const subscribeProductsAnalytics = (vendorId, callback) => {
+export const subscribeProductsAnalytics = (outletId, callback) => {
 
     const q = query(
         collection(db, "products"),
-        where("vendorId", "==", vendorId),
+        where("outletId", "==", outletId),
         where("deleted", "==", false)
     );
 

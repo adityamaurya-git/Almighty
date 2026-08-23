@@ -11,10 +11,13 @@ import OrderFilters from "../components/orders/OrderFilters";
 import { isToday } from "../utils/date.utils";
 import AutoAcceptCard from "../components/dashboard/AutoAcceptCard";
 import { toast } from "react-hot-toast";
+import { updateAutoAccept } from "../services/outlet.service";
+import AutoAcceptModal from "../components/dashboard/AutoAcceptModal";
 
 const DashboardLayout = ({ children }) => {
 
-    const { vendor, logoutVendo, loginVendor } = useAuth();
+    // const { vendor, logoutVendo, loginVendor } = useAuth();
+    const { outlet, logoutOutlet, loginOutlet } = useAuth();
     const { orders, loading } = useOrders();
 
 
@@ -50,38 +53,119 @@ const DashboardLayout = ({ children }) => {
 
     }, [orders, selectedFilter]);
 
+
+    // previous code
+    // const handleAutoAcceptToggle = async () => {
+
+    //     if (!vendor.autoAcceptOrders) {
+    //         setShowAutoAcceptModal(true);
+    //         return;
+    //     }
+
+    //     await updateAutoAccept(outlet.ownerId, outlet.businessId , outlet.outletId , false);
+
+    //     loginOutlet({
+    //         ...outlet,
+    //         autoAcceptOrders: false
+    //     });
+
+    //     toast.success("Auto Accept Disabled");
+
+    // };
+
+
+    // new outlet based code
     const handleAutoAcceptToggle = async () => {
 
-        if (!vendor.autoAcceptOrders) {
+        if (!outlet) {
+            toast.error("Outlet information not available.");
+            return;
+        }
+
+        if (!outlet.autoAcceptOrders) {
             setShowAutoAcceptModal(true);
             return;
         }
 
-        await updateAutoAccept(vendor.id, false);
+        try {
 
-        loginVendor({
-            ...vendor,
-            autoAcceptOrders: false
-        });
+            await updateAutoAccept(
+                outlet.ownerId,
+                outlet.businessId,
+                outlet.outletId,
+                false
+            );
 
-        toast.success("Auto Accept Disabled");
+            loginOutlet({
+                ...outlet,
+                autoAcceptOrders: false
+            });
+
+            toast.success("Auto Accept Disabled");
+
+        } catch (error) {
+
+            console.error("Failed to disable auto accept:", error);
+
+            toast.error("Failed to disable Auto Accept.");
+
+        }
 
     };
 
+
+    // previous code
+    // const enableAutoAccept = async () => {
+
+    //     await updateAutoAccept(outlet.ownerId, outlet.businessId, outlet.outletId, true);
+    //     loginOutlet({
+    //         ...outlet,
+    //         autoAcceptOrders: true
+    //     });
+
+    //     toast.success("Auto Accept Enabled");
+
+    //     setShowAutoAcceptModal(false);
+
+    // };
+
+
+    // new outlet based code
     const enableAutoAccept = async () => {
 
-        await updateAutoAccept(vendor.id, true);
+        if (!outlet) {
+            toast.error("Outlet information not available.");
+            return;
+        }
 
-        loginVendor({
-            ...vendor,
-            autoAcceptOrders: true
-        });
+        try {
 
-        toast.success("Auto Accept Enabled");
+            await updateAutoAccept(
+                outlet.ownerId,
+                outlet.businessId,
+                outlet.outletId,
+                true
+            );
 
-        setShowAutoAcceptModal(false);
+            loginOutlet({
+                ...outlet,
+                autoAcceptOrders: true
+            });
+
+            toast.success("Auto Accept Enabled");
+
+            setShowAutoAcceptModal(false);
+
+        } catch (error) {
+
+            console.error("Failed to enable auto accept:", error);
+
+            toast.error("Failed to enable Auto Accept.");
+
+        }
 
     };
+
 
     const statsOrders = useMemo(() => {
         const now = new Date();

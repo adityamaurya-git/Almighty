@@ -3,13 +3,13 @@ import { useAuth } from "../hooks/useAuth";
 
 const ProtectedRoute = ({ children }) => {
 
-    const { vendor, loading } = useAuth();
+    const { outlet, loading } = useAuth();
 
     if (loading) {
         return <h2>Loading...</h2>;
     }
 
-    if (!vendor) {
+    if (!outlet) {
         return <Navigate to="/login" replace />;
     }
 

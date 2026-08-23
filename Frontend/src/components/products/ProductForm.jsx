@@ -11,11 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 
 export const ProductForm = ({ close, product = null, editMode = false }) => {
 
+    const { outlet } = useAuth();
+
     const [formData, setFormData] = useState({
 
         name: product?.name || "",
         description: product?.description || "",
-        category: product?.category || "",
+        // category: outlet?.category || "",
         price: product?.price || "",
         discountPrice: product?.discountPrice || "",
         stock: product?.stock || "",
@@ -29,7 +31,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
     const [loading, setLoading] = useState(false);
 
     const { createProduct, updateProduct } = useProducts();
-    const { vendor } = useAuth();
+    // console.log("outlet in product form : ", outlet);
 
 
     useEffect(() => {
@@ -56,7 +58,14 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: 
+                name === "price" ||
+                name === "discountPrice" ||
+                name === "stock"
+                    ? value === "" 
+                        ? "" 
+                        : Number(value)
+                    : value
         }));
 
     }
@@ -81,11 +90,6 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             ...prev,
             ...files
         ]);
-
-        // setPreviewImages(prev => [
-        //     ...prev,
-        //     ...newPreviews
-        // ]);
     };
 
 
@@ -117,8 +121,8 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             newErrors.name = "Product name is required";
 
 
-        if (!formData.category)
-            newErrors.category = "Category is required";
+        // if (!formData.category)
+        //     newErrors.category = "Category is required";
 
 
         if (!formData.description.trim())
@@ -165,18 +169,23 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
         e.preventDefault();
 
+        // console.log("formData in product form : ", formData);
+
         if (!validate()) return;
 
         try {
             setLoading(true);
             if (editMode) {
-                console.log("images state : " , images);
+                console.log("images state : ", images);
                 await updateProduct(product.id,
                     {
                         ...formData,
-                        vendorId: vendor.id,
-                        shopName: vendor.shopName,
-                        images : images
+                        outletId: outlet.id,
+                        shopName: outlet.shopName,
+                        ownerId: outlet.ownerId,
+                        businessId: outlet.businessId,
+                        category: outlet.category,
+                        images: images
                             .filter(image => !image.isNew)
                             .map(image => image.url)
                     },
@@ -190,8 +199,11 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                 await createProduct(
                     {
                         ...formData,
-                        vendorId: vendor.id,
-                        shopName: vendor.shopName
+                        outletId: outlet.id,
+                        shopName: outlet.shopName,
+                        ownerId: outlet.ownerId,
+                        businessId: outlet.businessId,
+                        category: outlet.category
                     },
                     images.map(img => img.file)
                 );
@@ -245,7 +257,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
         );
 
-    }; 
+    };
 
     return (
 
@@ -272,7 +284,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
 
                 {/* category */}
-                <div>
+                {/* <div>
                     <label> Category </label>
 
                     <CategoryDropdown
@@ -286,23 +298,23 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                     />
 
                     <p className="text-red-500 text-sm"> {errors.category} </p>
+                </div> */}
+
+                <div>
+                    <label> Description </label>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        rows={2}
+                        className="w-full border rounded-xl p-2"
+                    />
+
+                    <p className="text-red-500 text-sm"> {errors.description} </p>
+
                 </div>
-
             </div>
 
-            <div>
-                <label> Description </label>
-                <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full border rounded-xl p-2"
-                />
-
-                <p className="text-red-500 text-sm"> {errors.description} </p>
-
-            </div>
 
 
 
@@ -349,45 +361,57 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
                 {/* <div className="grid grid-cols-4 gap-5"> */}
 
-                <div>
-                    <label> Stock </label>
+                {/* stock */}
+                {/* { */}
+                    {/* outlet?.category !== "Food Delivery" && ( */}
+                        <div>
+                            <label> Stock </label>
 
-                    <input
-                        type="number"
-                        name="stock"
-                        value={formData.stock}
-                        onChange={handleChange}
-                        className="w-full border rounded-xl p-3"
-                    />
+                            <input
+                                type="number"
+                                name="stock"
+                                value={formData.stock}
+                                onChange={handleChange}
+                                className="w-full border rounded-xl p-3"
+                            />
 
-                    <p className="text-red-500 text-sm"> {errors.stock} </p>
+                            <p className="text-red-500 text-sm"> {errors.stock} </p>
 
-                </div>
+                        </div>
+                    {/* )
+                } */}
 
-                <div>
-                    <label> Unit </label>
+                {/* unit */}
 
-                    <select
-                        name="unit"
-                        value={formData.unit}
-                        onChange={handleChange}
-                        className="w-full border rounded-xl p-3"
-                    >
-                        <option value="piece"> Piece </option>
+                {/* {
+                    outlet?.category !== "Food Delivery" && ( */}
 
-                        <option value="kg"> Kg </option>
+                        <div>
+                            <label> Unit </label>
 
-                        <option value="gram"> Gram </option>
+                            <select
+                                name="unit"
+                                value={formData.unit}
+                                onChange={handleChange}
+                                className="w-full border rounded-xl p-3"
+                            >
+                                <option value="piece"> Piece </option>
 
-                        <option value="litre"> Litre </option>
+                                <option value="kg"> Kg </option>
 
-                        <option value="packet"> Packet </option>
+                                <option value="gram"> Gram </option>
 
-                    </select>
+                                <option value="litre"> Litre </option>
 
-                </div>
+                                <option value="packet"> Packet </option>
 
-                {/* </div> */}
+                            </select>
+
+                        </div>
+                    {/* )
+                }
+
+                </div> */}
 
             </div>
 

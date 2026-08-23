@@ -81,7 +81,7 @@ export const TermsAndConditions = () => {
   return (
     <div className=" min-h-screen">
       {/* Hero */}
-      <div className="border-b border-neutral-800">
+      <div className="border-b ">
         <div className="max-w-6xl mx-auto px-6 py-20">
           <h1 className="text-5xl font-bold mb-4">
             Terms & Conditions
@@ -93,7 +93,7 @@ export const TermsAndConditions = () => {
             with and be bound by these terms.
           </p>
 
-          <div className="mt-6 inline-flex items-center rounded-full border border-red-600/40 bg-red-600/10 px-5 py-2 text-red-400">
+          <div className="mt-6 inline-flex items-center rounded-lg border  bg-primary-bg2-color px-5 py-2">
             Last Updated: July 2026
           </div>
         </div>
@@ -102,8 +102,8 @@ export const TermsAndConditions = () => {
       <div className="max-w-6xl mx-auto px-6 py-16 grid lg:grid-cols-4 gap-12">
         {/* Sidebar */}
         <aside className="lg:sticky lg:top-24 self-start">
-          <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <h3 className=" font-semibold mb-5 text-partner-primary-bg-color">
+          <div className="rounded-2xl border border-neutral-800 bg-black p-6">
+            <h3 className=" font-semibold mb-5 text-primary-bg2-color">
               Table of Contents
             </h3>
 
@@ -112,7 +112,7 @@ export const TermsAndConditions = () => {
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
-                    className=" text-secondary-bg-color hover:text-partner-primary-bg-color transition"
+                    className=" text-secondary-bg-color hover:text-primary-bg2-color transition"
                   >
                     {item.title}
                   </a>
@@ -143,7 +143,7 @@ export const TermsAndConditions = () => {
           </div>
 
           {/* Footer Note */}
-          <div className="mt-20 rounded-2xl border border-red-600/30 bg-partner-primary-bg-color p-8">
+          <div className="mt-20 rounded-lg border bg-primary-bg2-color p-8">
             <h3 className="text-2xl font-semibold  mb-4">
               Agreement
             </h3>

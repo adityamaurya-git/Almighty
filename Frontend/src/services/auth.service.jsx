@@ -1,4 +1,4 @@
-import { RecaptchaVerifier, signInWithPhoneNumber , signOut } from "firebase/auth";
+import { RecaptchaVerifier, signInWithPhoneNumber , signOut , signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
 let confirmationResult = null;
@@ -36,6 +36,19 @@ export const verifyOTP = async (otp) => {
 
   return await confirmationResult.confirm(otp);
 };
+
+export const loginWithEmail = async (email , password) =>{
+
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const result = await signInWithEmailAndPassword(
+    auth , 
+    normalizedEmail ,
+    password
+  )
+
+  return result.user;
+}
 
 export const logout = async () => {
 

@@ -6,7 +6,7 @@ const Header = () => {
 
     const { orders } = useOrders();
 
-    const { vendor } = useAuth();
+    const { outlet } = useAuth();
     const newOrdersCount = orders.filter(
     order => order.status === "order placed"
     ).length;
@@ -19,7 +19,7 @@ const Header = () => {
                 <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
 
                 <p className="text-sm text-gray-500 sm:text-base">Welcome back,
-                    <span className="font-semibold">{" "}{vendor?.ownerName}</span>
+                    <span className="font-semibold">{" "}{outlet?.ownerName}</span>
                 </p>
 
             </div>
@@ -42,7 +42,7 @@ const Header = () => {
 
                     <h2 className="font-semibold text-sm sm:text-base">
 
-                        {vendor?.shopName}
+                        {outlet?.name}
 
                     </h2>
 
@@ -52,7 +52,7 @@ const Header = () => {
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-bg2-color text-2xl font-bold text-black sm:h-12 sm:w-12">
 
-                    {vendor?.ownerName?.charAt(0)}
+                    {outlet?.name?.charAt(0)}
 
                 </div>
 

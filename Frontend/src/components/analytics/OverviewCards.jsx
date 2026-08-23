@@ -3,7 +3,7 @@ import { useAnalytics } from "../../hooks/useAnalytics";
 const OverviewCards = () => {
 
     const analytics = useAnalytics();
-    console.log("analytics", analytics);
+    // console.log("analytics", analytics);
 
     const cards = [
 

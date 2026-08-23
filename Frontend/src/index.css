@@ -92,10 +92,25 @@
     background-position: center;
 }
 
-
+/* 
 .ctaSection{
     background: url("/images/red-bg.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position:bottom;
+} */
+
+
+/* marquee section */
+
+.move{
+    width:max-content;
+    will-change:transform;
 }
+
+.marque{
+    white-space:nowrap;
+    flex-shrink:0;
+}
+
+/* marquee section */

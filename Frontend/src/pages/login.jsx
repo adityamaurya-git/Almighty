@@ -1,119 +1,327 @@
-import { Link , useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { sendOTP, verifyOTP } from "../services/auth.service";
-import { getVendorByPhone , getVendorByUID, saveVendorUID } from "../services/vendor.service";
+
+import { loginWithEmail } from "../services/auth.service";
+import { getOutletByAuthUID } from "../services/outlet.service";
+
 import { useAuth } from "../hooks/useAuth";
-import PhoneInput from "../components/auth/PhoneInput";
-import OTPInput from "../components/auth/OTPInput";
-import Recaptcha from "../components/auth/Recaptcha";
+
 import toast from "react-hot-toast";
 
+
 export const Login = () => {
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
 
-  const navigate = useNavigate();
-  const { loginVendor } = useAuth();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  const handleSendOTP = async (e) => {
-    e.preventDefault();
-    try {
+    const [loading, setLoading] = useState(false);
 
-      if(phone.length !== 10) {
-        toast.error("Please enter a valid 10-digit phone number.");
-        return;
-      }
+    const navigate = useNavigate();
 
-      await sendOTP("+91" + phone);
-      toast.success("OTP sent successfully!");
-      setOtpSent(true);
+    const { loginOutlet } = useAuth();
 
-    } catch (err) {
 
-      console.error(err);
-      toast.error(err.message);
+    // ==========================================
+    // LOGIN
+    // ==========================================
 
-    }
+    const handleLogin = async (e) => {
 
-  };
+        e.preventDefault();
 
-//   const handleVerifyOTP = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const result = await verifyOTP(otp);
+        if (!email.trim()) {
+            toast.error("Please enter your email.");
+            return;
+        }
 
-//       console.log(result.user);
+        if (!password) {
+            toast.error("Please enter your password.");
+            return;
+        }
 
-//       alert("Login Successful");
-//     } catch (err) {
-//       console.error(err);
-//       alert("Invalid OTP");
-//     }
-//   };
 
-const handleVerifyOTP = async (e) => {
-  e.preventDefault();
-  try {
-    const result = await verifyOTP(otp);
+        try {
 
-    // Firebase Auth User
-    const firebaseUser = result.user;
-    // console.log("Firebase User:", firebaseUser);
+            setLoading(true);
 
-   const vendor = await getVendorByPhone(phone);
 
-   if(!vendor){
-    toast.error("Vendor not found. Please register first.");
-    return;
-   }
+            // ------------------------------------------
+            // 1. Firebase Authentication
+            // ------------------------------------------
 
-   if(!vendor.uid){
-    await saveVendorUID(vendor.id , firebaseUser.uid);
-    vendor.uid = firebaseUser.uid; // Update the vendor object with the new UID
-   }
+            const firebaseUser = await loginWithEmail(
+                email,
+                password
+            );
 
-   loginVendor(vendor);
-   navigate("/almighty/partner/dashboard");
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Invalid OTP");
-  }
-};
+            // console.log(
+            //     "Firebase Auth UID:",
+            //     firebaseUser.uid
+            // );
 
-  return (
-    <>
-            <section className="w-full min-h-[105vh] flex justify-end">
-            <div className="w-1/2 bg-primary-bg-color h-full px-10 py-35">
-                <div className="w-full h-full bg-secondary-bg-color p-15">
-                    <h1 className="text-4xl">Login</h1>
-                    <p>or <Link className="text-primary-bg-color text-sm" to="/register">create an account</Link></p>
-                    <form 
-                    className="w-full h-full flex flex-col">
-                          {!otpSent ? (
-                            <PhoneInput 
-                                phone={phone}
-                                setPhone={setPhone}
-                                sendOTP={handleSendOTP}
+
+            // ------------------------------------------
+            // 2. Find outlet using authUid
+            // ------------------------------------------
+
+            const outlet = await getOutletByAuthUID(
+                firebaseUser.uid
+            );
+
+
+            if (!outlet) {
+
+                toast.error(
+                    "This account is not registered as an outlet."
+                );
+
+                return;
+            }
+
+
+            console.log(
+                "Outlet:",
+                outlet
+            );
+
+
+            // ------------------------------------------
+            // 3. Check outlet status
+            // ------------------------------------------
+
+            if (outlet.role !== "outlet") {
+
+                toast.error(
+                    "This account is not an outlet account."
+                );
+
+                return;
+            }
+
+
+            if (outlet.status !== "approved") {
+
+                toast.error(
+                    "Your outlet account is not approved yet."
+                );
+
+                return;
+            }
+
+
+            if (outlet.loginEnabled !== true) {
+
+                toast.error(
+                    "Login is currently disabled for this outlet."
+                );
+
+                return;
+            }
+
+
+            if (outlet.outletActive !== true) {
+
+                toast.error(
+                    "This outlet is currently inactive."
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------
+            // 4. Store outlet in AuthContext
+            // ------------------------------------------
+
+            // loginVendor(outlet);
+            loginOutlet(outlet);
+
+
+            // ------------------------------------------
+            // 5. Dashboard
+            // ------------------------------------------
+
+            toast.success("Login successful!");
+
+            navigate(
+                "/almighty/partner/dashboard"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            switch (error.code) {
+
+                case "auth/invalid-credential":
+                    toast.error(
+                        "Invalid email or password."
+                    );
+                    break;
+
+                case "auth/user-not-found":
+                    toast.error(
+                        "No account found with this email."
+                    );
+                    break;
+
+                case "auth/wrong-password":
+                    toast.error(
+                        "Incorrect password."
+                    );
+                    break;
+
+                case "auth/too-many-requests":
+                    toast.error(
+                        "Too many attempts. Please try again later."
+                    );
+                    break;
+
+                case "auth/invalid-email":
+                    toast.error(
+                        "Please enter a valid email."
+                    );
+                    break;
+
+                default:
+                    toast.error(
+                        error.message || "Login failed."
+                    );
+            }
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+
+    return (
+
+        <section className="w-full min-h-screen flex justify-end">
+
+            <div className="w-full md:w-1/2 bg-primary-bg-color min-h-screen px-6 md:px-10 py-20">
+
+                <div className="w-full h-full bg-secondary-bg-color p-8 md:p-15 rounded-xl">
+
+                    <h1 className="text-4xl font-bold">
+                        Outlet Login
+                    </h1>
+
+
+                    <p className="mt-2 text-gray-600">
+
+                        Login to manage your outlet
+
+                    </p>
+
+
+                    <form
+                        onSubmit={handleLogin}
+                        className="mt-10 w-full flex flex-col gap-5"
+                    >
+
+
+                        {/* EMAIL */}
+
+                        <div className="flex flex-col gap-2">
+
+                            <label className="font-medium">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
+                                placeholder="Enter your outlet email"
+                                autoComplete="email"
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-primary-bg-color"
                             />
-                          ) : (
-                            <OTPInput 
-                                otp={otp}
-                                setOTP={setOtp}
-                                verifyOTP={handleVerifyOTP}
-                                resendOTP={handleSendOTP}
-                            />
-                          )}
 
-                        <p className="text-sm text-gray-600">By clicking on Login, I accept the <Link to="/almighty/policies" className="text-primary-bg-color">Terms & Conditions</Link> & <Link to="/almighty/policies" className="text-primary-bg-color">Privacy Policy</Link> </p>
+                        </div>
+
+
+                        {/* PASSWORD */}
+
+                        <div className="flex flex-col gap-2">
+
+                            <label className="font-medium">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
+                                placeholder="Enter your password"
+                                autoComplete="current-password"
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-primary-bg-color"
+                            />
+
+                        </div>
+
+
+                        {/* LOGIN BUTTON */}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="mt-3 rounded-lg bg-primary-bg-color px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+
+                            {loading
+                                ? "Logging in..."
+                                : "Login"
+                            }
+
+                        </button>
+
+
+                        <p className="text-sm text-gray-600">
+
+                            By clicking on Login, I accept the{" "}
+
+                            <Link
+                                to="/almighty/policies"
+                                className="text-primary-bg-color"
+                            >
+                                Terms & Conditions
+                            </Link>
+
+                            {" "}and{" "}
+
+                            <Link
+                                to="/almighty/policies"
+                                className="text-primary-bg-color"
+                            >
+                                Privacy Policy
+                            </Link>
+
+                        </p>
+
                     </form>
-                    <Recaptcha />
+
                 </div>
+
             </div>
-            {/* <div id="recaptcha-container"></div> */}
+
         </section>
 
-    </>
-  );
+    );
 };
+
+
+export default Login;

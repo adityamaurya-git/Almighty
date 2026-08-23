@@ -1,21 +1,25 @@
 import { useState } from "react";
 import AutoAcceptModal from "./AutoAcceptModal";
-import { updateAutoAccept } from "../../services/vendor.service";
+import { updateAutoAccept } from "../../services/outlet.service";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
 
 const AutoAcceptCard = () => {
 
-    const { vendor } = useAuth();
+    const { outlet } = useAuth();
     const [showModal, setShowModal] = useState(false);
 
+    if(!outlet) return null;
+    
     const handleToggle = async () => {
 
         // Turning OFF
-        if (vendor.autoAcceptOrders) {
+        if (outlet.autoAcceptOrders) {
             await updateAutoAccept(
-                vendor.id,
+                outlet.ownerId,
+                outlet.businessId,
+                outlet.outletId,
                 false
             );
 
@@ -46,7 +50,7 @@ const AutoAcceptCard = () => {
                     <button
                         onClick={handleToggle}
                         className={` h-7 w-14 rounded-full transition
-                        ${vendor.autoAcceptOrders
+                        ${outlet.autoAcceptOrders
                             ? "bg-green-500"
                             : "bg-gray-300"}
                     `}

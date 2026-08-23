@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { updateAutoAccept } from "../../services/vendor.service";
+import { updateAutoAccept } from "../../services/outlet.service";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
 const AutoAcceptModal = ({ close }) => {
 
-    const { vendor } = useAuth();
+    const { outlet } = useAuth();
     const [checked, setChecked] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,9 @@ const AutoAcceptModal = ({ close }) => {
             setLoading(true);
 
             await updateAutoAccept(
-                vendor.id,
+                outlet.ownerId,
+                outlet.businessId,
+                outlet.outletId,
                 true
             );
 

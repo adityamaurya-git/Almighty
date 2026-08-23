@@ -8,8 +8,8 @@ export const Navbar = () =>{
     const navLinks = [
         { to: "/", label: "Home" },
         { to: "/", label: "Services" },
-        { to: "/", label: "Offers" },
-        { to: "/", label: "About Us" },
+        { to: "/almighty/contact-us", label: "Contact Us" },
+        { to: "/almighty/about-us", label: "About Us" },
     ]
 
     return(<>

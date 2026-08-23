@@ -5,7 +5,7 @@ export const AnalyticsContext = createContext();
 
 export const AnalyticsProvider = ({ children }) => {
 
-    const { vendor } = useAuth();
+    const { vendor , outlet } = useAuth();
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [dateFilter, setDateFilter] = useState("today");
@@ -28,11 +28,11 @@ export const AnalyticsProvider = ({ children }) => {
 
     useEffect(() => {
 
-        if (!vendor?.id) return;
+        if (!outlet?.outletId) return;
 
         const unsubscribeOrders =
             subscribeOrdersAnalytics(
-                vendor.id,
+                outlet.outletId,
                 (ordersData) => {
                     setOrders(ordersData);
                 }
@@ -40,7 +40,7 @@ export const AnalyticsProvider = ({ children }) => {
 
         const unsubscribeProducts =
             subscribeProductsAnalytics(
-                vendor.id,
+                outlet.outletId,
                 (productsData) => {
                     setProducts(productsData);
                 }
@@ -51,7 +51,7 @@ export const AnalyticsProvider = ({ children }) => {
             unsubscribeProducts();
         };
 
-    }, [vendor]);
+    }, [outlet]);
 
     useEffect(() => {
         calculateAnalytics(
@@ -63,7 +63,7 @@ export const AnalyticsProvider = ({ children }) => {
 
 
     const calculateAnalytics = (orders, products, filter) => {
-        console.log("orders:", orders, "products:", products);
+        // console.log("orders:", orders, "products:", products);
 
         const now = new Date();
         let filteredOrders = [...orders];

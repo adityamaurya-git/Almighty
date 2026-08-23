@@ -11,6 +11,7 @@ import AddProductModal from "../components/products/AddProductModal";
 const Products = () => {
 
     const { products, loading } = useProducts();
+    
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("All");
     const [ showAdd , setShowAdd ] = useState(false);
@@ -19,15 +20,16 @@ const Products = () => {
     const filteredProducts = useMemo(() => {
 
         let data = [...products];
+
         if (filter === "Available") {
             data = data.filter(
-                p => p.status === "active"
+                p => p.available === true
             );
         }
 
         if (filter === "Unavailable") {
             data = data.filter(
-                p => p.status === "out_of_stock"
+                p => p.available === false
             );
         }
 

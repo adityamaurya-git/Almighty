@@ -3,6 +3,8 @@ import EmptyState from "../dashboard/EmptyState";
 
 const OrderList = ({ orders }) => {
 
+    // console.log("orders in OrderList", orders);
+
     if (orders.length === 0) {
         return <EmptyState/>;
     }

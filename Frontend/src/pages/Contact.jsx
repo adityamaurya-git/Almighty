@@ -78,13 +78,13 @@ export const ContactUs = () => {
       <section className="">
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
 
-          <span className="inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-partner-primary-bg-color text-sm">
+          <span className="inline-block rounded-lg border bg-primary-bg2-color px-4 py-2 text-black text-sm">
             Contact ALMIGHTY
           </span>
 
           <h1 className="text-5xl md:text-6xl font-bold mt-6">
             We'd Love to Hear
-            <span className="block text-partner-primary-bg-color">
+            <span className="block text-primary-bg2-color">
               From You
             </span>
           </h1>
@@ -107,13 +107,13 @@ export const ContactUs = () => {
 
           <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-8">
 
-            <MessageSquare className="text-partner-primary-bg-color" size={36} />
+            <MessageSquare className="text-primary-bg2-color" size={36} />
 
-            <h2 className="text-3xl font-bold mt-6 text-primary-text-color">
+            <h2 className="text-3xl font-bold mt-6 text-secondary-bg-color">
               Get in Touch
             </h2>
 
-            <p className=" mt-4 leading-8 text-primary-text-color">
+            <p className=" mt-4 leading-8 text-secondary-bg-color">
               Whether you have a question about an order, partnership,
               delivery, or simply want to share your feedback, we're here to
               help.
@@ -122,37 +122,37 @@ export const ContactUs = () => {
           </div>
 
           <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
-            <Mail className="text-partner-primary-bg-color mt-1" />
+            <Mail className="text-primary-bg2-color mt-1" />
             <div>
               <h3 className="font-semibold text-lg">
                 Email
               </h3>
               <p className="">
-                support@almighty.com
+                contact@almightyhyperlocal.in
               </p>
             </div>
           </div>
 
           <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
-            <Phone className="text-partner-primary-bg-color mt-1" />
+            <Phone className="text-primary-bg2-color mt-1" />
             <div>
               <h3 className="font-semibold text-lg">
                 Phone
               </h3>
               <p className="">
-                +91 XXXXX XXXXX
+                +91 62647 58852 
               </p>
             </div>
           </div>
 
           <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
-            <MapPin className="text-partner-primary-bg-color mt-1" />
+            <MapPin className="text-primary-bg2-color mt-1" />
             <div>
               <h3 className="font-semibold text-lg">
                 Office
               </h3>
               <p className="">
-                India
+                Awadhpuri , Bhopal , M.P.
               </p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export const ContactUs = () => {
                 placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full rounded-xl bg-neutral-950 border border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
+                className="w-full rounded-xl text-white bg-neutral-950 border border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
               />
 
               {errors.name && (
@@ -207,7 +207,7 @@ export const ContactUs = () => {
                 placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full rounded-xl bg-neutral-950 border border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
+                className="w-full rounded-xl bg-neutral-950 border text-white border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
               />
 
               {errors.email && (
@@ -230,7 +230,7 @@ export const ContactUs = () => {
                 placeholder="Write your message here..."
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full resize-none rounded-xl bg-neutral-950 border border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
+                className="w-full resize-none rounded-xl bg-neutral-950 border text-white border-neutral-700 px-5 py-4 outline-none focus:border-red-500"
               />
 
               {errors.message && (
@@ -243,7 +243,7 @@ export const ContactUs = () => {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-partner-primary-bg-color py-4 font-semibold hover:bg-red-500 transition flex items-center justify-center gap-2"
+              className="w-full rounded-xl bg-primary-bg2-color py-4 font-semibold hover:bg-amber-400 cursor-pointer transition flex items-center justify-center gap-2"
             >
               <Send size={18} />
               Send Message
