@@ -10,14 +10,15 @@ import { STATUS } from "../../utils/orderStatus";
 import StatusBadge from "./StatusBadge";
 import usePreparationTimer from "../../hooks/usePreparationTimer";
 import PreparationTimeModal from "./PreparationModal";
+import { useAuth } from "../../hooks/useAuth";
 
 
 const OrderCard = ({ order }) => {
 
-    // console.log("order in OrderCard", order);
+    const { outlet } = useAuth();
 
     const { remaining, minutes, seconds, isFinished } = usePreparationTimer(
-        order.acceptedAt,
+        order.confirmedAt,
         order.prepTime
     );
 
@@ -37,7 +38,7 @@ const OrderCard = ({ order }) => {
     useEffect(() => {
 
         if (order.status !== STATUS.CONFIRMED ||
-            !order.acceptedAt ||
+            !order.confirmedAt ||
             order.extensionPromptShown
         ) return;
 
@@ -48,7 +49,7 @@ const OrderCard = ({ order }) => {
             setShowPreparationPopup(true);
             markExtensionPromptShown(order.id);
         }
-    }, [remaining, order.status, order.acceptedAt, order.extensionPromptShown, order.id]);
+    }, [remaining, order.status, order.confirmedAt, order.extensionPromptShown, order.id]);
 
     useEffect(() => {
 
@@ -120,16 +121,34 @@ const OrderCard = ({ order }) => {
             <div className="flex flex-wrap gap-3">
                 {
                     order.status === STATUS.PLACED &&
-                    <>
-                        <button className="px-4 py-2 cursor-pointer rounded bg-green-600 text-white"
-                            onClick={() => handleStatus(STATUS.CONFIRMED)}
-                        > Accept </button>
+                    (
+                        outlet?.autoAcceptOrders
+                            ? (
+                                <button
+                                    disabled
+                                    className="rounded bg-blue-100 px-5 py-2 text-blue-600"
+                                >
+                                    Auto accepting...
+                                </button>
+                            )
+                            : (
+                                <>
+                                    <button
+                                        className="px-4 py-2 cursor-pointer rounded bg-green-600 text-white"
+                                        onClick={() => handleStatus(STATUS.CONFIRMED)}
+                                    >
+                                        Accept
+                                    </button>
 
-                        <button className="px-4 py-2 cursor-pointer rounded bg-red-600 text-white"
-                            onClick={() => handleStatus(STATUS.REJECTED)}
-
-                        > Reject</button>
-                    </>
+                                    <button
+                                        className="px-4 py-2 cursor-pointer rounded bg-red-600 text-white"
+                                        onClick={() => handleStatus(STATUS.REJECTED)}
+                                    >
+                                        Reject
+                                    </button>
+                                </>
+                            )
+                    )
                 }
 
                 {
@@ -213,8 +232,20 @@ const OrderCard = ({ order }) => {
                     <p>
                         <span className="font-medium">Phone:</span> {order.riderPhone}
                     </p>
-                </div>)}
+                </div>)
+            }
 
+            {order.dispatchStatus === "no_rider" && (
+                <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
+                    <p className="font-semibold text-red-700">
+                        No delivery partner found
+                    </p>
+
+                    <p className="mt-1 text-sm text-red-600">
+                        We couldn't find an available rider for this order.
+                    </p>
+                </div>
+            )}
 
             {
 

@@ -93,7 +93,7 @@ export const Home = () => {
                     <div className="absolute bottom-10 lg:left-20 w-60 h-60 lg:w-80 lg:h-80 bg-primary-bg2-color  shadow-2xl rounded-full"></div>
 
                     <div className="absolute w-[70%] lg:w-[80%] z-10">
-                        <img src="/images/delivery boy (1).png" alt="" />
+                        <img className="  w-full" src="/images/delivery boy (1).png" alt="" />
                     </div>
                 </div>
             </div>
@@ -141,55 +141,69 @@ export const Home = () => {
 
         </section>
 
-        {/*  */}
-        <section className="w-full h-[150vh] lg:h-screen lg:relative flex flex-col justify-center bg-secondary-bg-color pt-10 lg:pt-0 ">
+        {/*  COMPARISON SECTION */}
+        <section className="w-full bg-secondary-bg-color px-4 py-12 sm:px-6 lg:min-h-screen lg:px-8 lg:py-16">
 
-            <div className="lg:absolute lg:top-10 w-full lg:h-[8vh] flex gap-3 p-1 justify-center items-center">
-                <h1 className=" text-2xl lg:text-5xl text-secondary-bg-color bg-primary-bg2-color rounded-lg px-4 py-1">GET READY TO SAVE MORE</h1>
-            </div>
+            <div className="mx-auto flex w-full max-w-7xl flex-col">
 
-            <div className="w-full h-full lg:h-[90vh]  flex flex-col lg:flex-row gap-5 justify-center items-center">
+                <div className="flex w-full flex-col gap-4 text-center">
+                    <h1 className="text-3xl leading-tight sm:text-4xl lg:text-5xl">Stop Losing 10-30% on Every Order</h1>
 
-                <div className="w-[60%] h-[25vh] lg:w-[23%] lg:h-[40vh] bg-secondary-bg2-color text-secondary-bg-color rounded-2xl  px-4 py-4">
-                    <div className="w-full h-[70%] flex flex-col gap-1 justify-start">
-                        <h1 className="text-lg lg:text-2xl">FOOD DELIVERY</h1>
-                        <p className="text-sm">FROM RESTAURANTS</p>
-                        <span className=" px-4 py-1 w-fit bg-primary-bg2-color text-black rounded-xl">UPTO 60% OFF</span>
-                    </div>
-                    <div className="w-12 h-12 rounded-full flex justify-center items-center bg-primary-bg2-color text-black">
-                        <ArrowRight size="2rem" />
+                    <div className="font-gilroySemiBol text-partner-text2-color flex flex-col text-base leading-6 sm:text-lg lg:text-xl lg:leading-7">
+                        <p>Inflated Prices , missed discounts are eating into your money on other apps.</p>
+                        <p> <span className="text-primary-bg2-color">Almighty</span> is built to give you more value from every order.</p>
                     </div>
                 </div>
-                <div className="w-[60%] h-[25vh] lg:w-[23%] lg:h-[40vh] bg-secondary-bg2-color text-secondary-bg-color rounded-2xl  px-4 py-4">
-                    <div className="w-full h-[70%] flex flex-col gap-1 justify-start">
-                        <h1 className="text-lg lg:text-2xl">INSTANT GROCERY</h1>
-                        <p className="text-sm">FROM YOUR LOCAL STORE</p>
-                        <span className=" px-4 py-1 w-fit bg-primary-bg2-color text-black rounded-xl">UPTO 60% OFF</span>
+
+                <div className="mt-8 grid w-full gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-10">
+
+                    <div className="flex w-full flex-col items-center gap-4">
+                        <h1 className="w-36 rounded-lg bg-red-300 py-1 text-center text-red-600">Other Apps</h1>
+
+                        <div className="flex w-full flex-1 justify-center">
+
+                            <div className="flex w-full max-w-xl flex-col gap-5 rounded-xl border-4 border-white bg-amber-50 p-4 shadow-2xl sm:p-6">
+                                <div>
+                                    <h2 className="text-lg text-red-400 sm:text-xl">Inflated menu prices</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">Prices are higher than actual store / restaurant prices.</p>
+                                </div>
+                                <div>
+                                    <h2 className="text-lg text-red-400 sm:text-xl">Delivery & convenience charges</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">Multiple charges add up and cut into your pocket.</p>
+                                </div>
+                                <div>
+                                    <h2 className="text-lg text-red-400 sm:text-xl">Fewer direct discounts</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">missing original pricing.</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <div className="w-12 h-12 rounded-full flex justify-center items-center bg-primary-bg2-color text-black">
-                        <ArrowRight size="2rem" />
+
+                    <div className="flex w-full flex-col items-center gap-4">
+
+                        <h1 className="w-36 rounded-lg bg-primary-bg2-color py-1 text-center">On ALMIGHTY</h1>
+
+                        <div className="flex w-full flex-1 justify-center">
+                            <div className="flex w-full max-w-xl flex-col gap-5 rounded-xl border-4 border-white bg-amber-50 p-4 shadow-2xl sm:p-6">
+                                <div>
+                                    <h2 className="text-lg sm:text-xl">Best Prices</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">Access to competitve and fair prices from local stores and brands.</p>
+                                </div>
+                                <div>
+                                    <h2 className="text-lg sm:text-xl">Lower additional charges</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">Transparent pricing with lower delivery and convenience fees.</p>
+                                </div>
+                                <div>
+                                    <h2 className="text-lg sm:text-xl">More of your money stays with you</h2>
+                                    <p className="font-gilroySemiBold text-sm text-partner-text2-color sm:text-base">You save 10-30% on every order you place.</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <div className="w-[60%] h-[25vh] lg:w-[23%] lg:h-[40vh] bg-secondary-bg2-color text-secondary-bg-color rounded-2xl  px-4 py-4">
-                    <div className="w-full h-[70%] flex flex-col gap-1 justify-start">
-                        <h1 className="text-lg lg:text-2xl">INSTANT MEDICINE</h1>
-                        <p className="text-sm">FROM YOUR LOCAL MEDICAL</p>
-                        <span className=" px-4 py-1 w-fit bg-primary-bg2-color text-black rounded-xl">UPTO 60% OFF</span>
-                    </div>
-                    <div className="w-12 h-12 rounded-full flex justify-center items-center  bg-primary-bg2-color text-black">
-                        <ArrowRight size="2rem" />
-                    </div>
-                </div>
-                <div className="w-[60%] h-[25vh] lg:w-[23%] lg:h-[40vh] bg-secondary-bg2-color text-secondary-bg-color rounded-2xl px-4 py-4">
-                    <div className="w-full h-[70%] flex flex-col gap-1 justify-start">
-                        <h1 className="text-lg lg:text-2xl">INSTANT ELECTRONICS</h1>
-                        <p className="text-sm">FROM YOUR LOCAL SHOP</p>
-                        <span className=" px-4 py-1 w-fit bg-primary-bg2-color text-black rounded-xl">UPTO 60% OFF</span>
-                    </div>
-                    <div className="w-12 h-12 rounded-full flex justify-center items-center bg-primary-bg2-color text-black">
-                        <ArrowRight size="2rem" />
-                    </div>
-                </div>
+
             </div>
 
         </section>
@@ -226,17 +240,25 @@ export const Home = () => {
                 <h1 className="uppercase text-[4.5rem]/15 ">Almighty</h1>
             </div> */}
 
-            <div className="w-[90vw] h-[80vh] flex flex-col justify-center gap-5 px-20 bg-linear-to-t from-secondary-bg-color to-white border-primary-bg2-color border-4 rounded-2xl">
+            <div className="w-[90vw] h-[80vh] flex flex-col justify-center gap-5 px-10 lg:px-20  border-primary-bg2-color border-4 rounded-2xl">
 
-                <div>
-                    <h1 className="text-3xl">Eat More. Spend Less.</h1>
-                    <p className="text-partner-text2-color">Download the app right now to save your money.</p>
-                </div>
+                <div className="w-full flex flex-col lg:flex-row gap-10">
 
-                <div className="w-full">
                     <div className="w-full flex flex-col gap-4">
-                        <Link className="bg-primary-bg2-color w-60 text-center text-xl px-2 py-1 rounded-2xl " to="/">Download Android</Link>
-                        <Link className="bg-primary-bg2-color w-60 text-center text-xl px-2 py-1 rounded-2xl " to="/">Download IOS</Link>
+                        <div>
+                            <h1 className="text-2xl lg:text-3xl">Eat More. Spend Less.</h1>
+                            <p className="text-partner-text2-color">Download the app right now to save your money.</p>
+                        </div>
+                        <div className="w-full flex flex-col items-center lg:items-start gap-4 ">
+                            <Link className="bg-primary-bg2-color w-50 lg:w-60 text-center text-xl px-2 py-1 rounded-2xl " to="/">Download Android</Link>
+                            <Link className="bg-primary-bg2-color w-50 lg:w-60 text-center text-xl px-2 py-1 rounded-2xl " to="/">Download IOS</Link>
+                        </div>
+                    </div>
+
+                    <div className=" w-full flex justify-center">
+                        <div className="bg-amber-50 flex justify-center border-4 shadow-2xs border-white rounded-xl w-50 lg:w-100 items-center">
+                            <img src="/images/QR.svg" alt="" />
+                        </div>
                     </div>
                 </div>
             </div>

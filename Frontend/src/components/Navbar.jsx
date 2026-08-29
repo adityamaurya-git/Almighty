@@ -7,7 +7,6 @@ export const Navbar = () =>{
 
     const navLinks = [
         { to: "/", label: "Home" },
-        { to: "/", label: "Services" },
         { to: "/almighty/contact-us", label: "Contact Us" },
         { to: "/almighty/about-us", label: "About Us" },
     ]

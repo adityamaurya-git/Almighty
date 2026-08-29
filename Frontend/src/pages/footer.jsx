@@ -10,7 +10,6 @@ export const Footer = () =>{
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
                         <div className="flex flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base">
                             <Link to="/">Home</Link>
-                            <Link to="/">Services</Link>
                             <Link to="/almighty/gods-plan">GOD'S Plan</Link>
                             <Link to="">Admin Panel</Link>
                         </div>
@@ -23,7 +22,6 @@ export const Footer = () =>{
                         </div>
                         <div className="flex flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base">
                             <Link to="/almighty/delivery">Delivery Partner</Link>
-                            <Link to="/">App for You</Link>
                             <Link to="/almighty/shipping-policy">Shipping Policy</Link>
                             <Link to="almighty/refund&cancellation">Refund & Cancellation</Link>
                         </div>

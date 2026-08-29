@@ -1,6 +1,6 @@
 import { collection, query, where, onSnapshot, doc, updateDoc, orderBy, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { dispatchToNearestRiders } from "./dispatch.service";
+// import { dispatchToNearestRiders } from "./dispatch.service";
 import { STATUS } from "../utils/orderStatus";
 
 
@@ -52,13 +52,13 @@ export const updateOrderStatus = async (order, status) => {
 
     if (status === STATUS.CONFIRMED) {
 
-        data.acceptedAt = serverTimestamp();
+        data.confirmedAt = serverTimestamp();
         data.prepTime = 15;
         data.extensionCount = 0;
         data.preparationCompleted = false;
         data.extensionPromptShown = false;
 
-        data.dispatchStatus = "searching";
+        // data.dispatchStatus = "searching";
     }
 
     await updateDoc(ref, data);
@@ -69,15 +69,15 @@ export const updateOrderStatus = async (order, status) => {
     ==========================
     */
 
-    if (status === STATUS.CONFIRMED) {
-        await dispatchToNearestRiders(
-            order.id,
-            order.vendorId,
-            order.vendorLat,
-            order.vendorLng,
-            order
-        );
-    }
+    // if (status === STATUS.CONFIRMED) {
+    //     await dispatchToNearestRiders(
+    //         order.id,
+    //         order.vendorId,
+    //         order.vendorLat,
+    //         order.vendorLng,
+    //         order
+    //     );
+    // }
 };
 
 

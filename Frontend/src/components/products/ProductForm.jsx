@@ -13,15 +13,20 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
     const { outlet } = useAuth();
 
+    const requiresInventory = [
+        "medical",
+        "Groceries",
+        "electronics",
+    ].includes(outlet?.category);
+
     const [formData, setFormData] = useState({
 
         name: product?.name || "",
         description: product?.description || "",
-        // category: outlet?.category || "",
         price: product?.price || "",
         discountPrice: product?.discountPrice || "",
-        stock: product?.stock || "",
-        unit: product?.unit || "piece",
+        stock: product?.stock ?? "",
+        unit: product?.unit ?? "",
         status: product?.status || "active"
 
     });
@@ -31,7 +36,6 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
     const [loading, setLoading] = useState(false);
 
     const { createProduct, updateProduct } = useProducts();
-    // console.log("outlet in product form : ", outlet);
 
 
     useEffect(() => {
@@ -58,12 +62,12 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
         setFormData(prev => ({
             ...prev,
-            [name]: 
+            [name]:
                 name === "price" ||
-                name === "discountPrice" ||
-                name === "stock"
-                    ? value === "" 
-                        ? "" 
+                    name === "discountPrice" ||
+                    name === "stock"
+                    ? value === ""
+                        ? ""
                         : Number(value)
                     : value
         }));
@@ -147,12 +151,22 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             }
         }
 
-        if (!formData.stock)
-            newErrors.stock = "Stock is required";
+        if (requiresInventory) {
+            if (
+                formData.stock === "" ||
+                formData.stock === null ||
+                formData.stock === undefined
+            ) {
+                newErrors.stock = "Stock is required";
+            }
+            else if (Number(formData.stock) < 0) {
+                newErrors.stock = "Stock cannot be negative";
+            }
 
-
-        if (Number(formData.stock) < 0)
-            newErrors.stock = "Invalid stock";
+            if (!formData.unit) {
+                newErrors.unit = "Unit is required";
+            }
+        }
 
 
         if (images.length === 0)
@@ -169,22 +183,41 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
         e.preventDefault();
 
-        // console.log("formData in product form : ", formData);
-
         if (!validate()) return;
 
         try {
             setLoading(true);
+
+            const productData = {
+                name: formData.name,
+                description: formData.description,
+                price: formData.price,
+                discountPrice: formData.discountPrice,
+                status: formData.status,
+
+                outletId: outlet.id,
+                shopName: outlet.shopName,
+                ownerId: outlet.ownerId,
+                businessId: outlet.businessId,
+                category: outlet.category
+
+            };
+
+            if (requiresInventory) {
+                productData.stock = formData.stock;
+                productData.unit = formData.unit;
+            }
+
+            console.log(
+                "🔥 PRODUCT DATA BEFORE CREATE:",
+                productData
+            );
+
             if (editMode) {
                 console.log("images state : ", images);
                 await updateProduct(product.id,
                     {
-                        ...formData,
-                        outletId: outlet.id,
-                        shopName: outlet.shopName,
-                        ownerId: outlet.ownerId,
-                        businessId: outlet.businessId,
-                        category: outlet.category,
+                        ...productData,
                         images: images
                             .filter(image => !image.isNew)
                             .map(image => image.url)
@@ -198,12 +231,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             else {
                 await createProduct(
                     {
-                        ...formData,
-                        outletId: outlet.id,
-                        shopName: outlet.shopName,
-                        ownerId: outlet.ownerId,
-                        businessId: outlet.businessId,
-                        category: outlet.category
+                        ...productData,
                     },
                     images.map(img => img.file)
                 );
@@ -283,23 +311,6 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                 </div>
 
 
-                {/* category */}
-                {/* <div>
-                    <label> Category </label>
-
-                    <CategoryDropdown
-                        value={formData.category}
-                        onChange={(e) =>
-                            setFormData(prev => ({
-                                ...prev,
-                                category: e.target.value
-                            }))
-                        }
-                    />
-
-                    <p className="text-red-500 text-sm"> {errors.category} </p>
-                </div> */}
-
                 <div>
                     <label> Description </label>
                     <textarea
@@ -320,7 +331,10 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
 
 
-            <div className="grid grid-cols-4 gap-5 mt-2">
+            <div className={`grid gap-5 mt-2 ${requiresInventory
+                ? "grid-cols-4"
+                : "grid-cols-2"
+                }`}>
 
                 {/* <div className="grid grid-cols-4 gap-5"> */}
                 <div>
@@ -355,39 +369,40 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
                 </div>
 
-                {/* </div> */}
-
-
-
-                {/* <div className="grid grid-cols-4 gap-5"> */}
 
                 {/* stock */}
-                {/* { */}
-                    {/* outlet?.category !== "Food Delivery" && ( */}
+                {requiresInventory && (
+                    <>
+                        {/* STOCK */}
+
                         <div>
-                            <label> Stock </label>
+                            <label>
+                                Stock <span className="text-red-500">*</span>
+                            </label>
 
                             <input
                                 type="number"
                                 name="stock"
+                                min="0"
                                 value={formData.stock}
                                 onChange={handleChange}
                                 className="w-full border rounded-xl p-3"
                             />
 
-                            <p className="text-red-500 text-sm"> {errors.stock} </p>
+                            <p className="text-red-500 text-sm">
+                                {errors.stock}
+                            </p>
 
                         </div>
-                    {/* )
-                } */}
 
-                {/* unit */}
 
-                {/* {
-                    outlet?.category !== "Food Delivery" && ( */}
+                        {/* UNIT */}
 
                         <div>
-                            <label> Unit </label>
+
+                            <label>
+                                Unit <span className="text-red-500">*</span>
+                            </label>
 
                             <select
                                 name="unit"
@@ -395,23 +410,41 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded-xl p-3"
                             >
-                                <option value="piece"> Piece </option>
 
-                                <option value="kg"> Kg </option>
+                                <option value="">
+                                    Select unit
+                                </option>
 
-                                <option value="gram"> Gram </option>
+                                <option value="piece">
+                                    Piece
+                                </option>
 
-                                <option value="litre"> Litre </option>
+                                <option value="kg">
+                                    Kg
+                                </option>
 
-                                <option value="packet"> Packet </option>
+                                <option value="gram">
+                                    Gram
+                                </option>
+
+                                <option value="litre">
+                                    Litre
+                                </option>
+
+                                <option value="packet">
+                                    Packet
+                                </option>
 
                             </select>
 
-                        </div>
-                    {/* )
-                }
+                            <p className="text-red-500 text-sm">
+                                {errors.unit}
+                            </p>
 
-                </div> */}
+                        </div>
+
+                    </>
+                )}
 
             </div>
 

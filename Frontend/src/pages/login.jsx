@@ -208,7 +208,7 @@ export const Login = () => {
 
         <section className="w-full min-h-screen flex justify-end">
 
-            <div className="w-full md:w-1/2 bg-primary-bg-color min-h-screen px-6 md:px-10 py-20">
+            <div className="w-full md:w-1/2 bg-primary-bg2-color min-h-screen px-6 md:px-10 py-20">
 
                 <div className="w-full h-full bg-secondary-bg-color p-8 md:p-15 rounded-xl">
 
@@ -279,7 +279,7 @@ export const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="mt-3 rounded-lg bg-primary-bg-color px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                            className="mt-3 rounded-lg bg-primary-bg2-color px-5 py-3 font-semibold text-black disabled:cursor-not-allowed disabled:opacity-50"
                         >
 
                             {loading

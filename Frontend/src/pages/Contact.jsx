@@ -1,11 +1,9 @@
 import { useState } from "react";
-import {
-  Mail,
-  MapPin,
-  Phone,
-  Send,
-  MessageSquare,
-} from "lucide-react";
+import { Mail, MapPin, Phone, Send, MessageSquare } from "lucide-react";
+import toast from "react-hot-toast";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+
 
 export const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -48,7 +46,7 @@ export const ContactUs = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = validate();
@@ -58,16 +56,31 @@ export const ContactUs = () => {
       return;
     }
 
-    // Replace with your API call
-    console.log(formData);
 
-    alert("Thank you! Your message has been sent.");
+    try{
+      await addDoc(collection(db, "contactMessages"),{
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+        status: "new",
+        createdAt: serverTimestamp(),
+        readAt: null,
+      });
 
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
+      toast.success("Message sent successfully!");
+
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+
+      setErrors({});
+    }catch(error){
+      toast.error("Failed to send message. Please try again later.");
+    }
+
+
   };
 
   return (

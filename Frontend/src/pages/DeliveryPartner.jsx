@@ -5,45 +5,42 @@ import { FAQDelivery } from "../components/FAQDelivery"
 export const DeliveryPartner = () =>{
 
     return(<>
-        <section className="w-full bg-partner-primary-bg-color">
+        <section className="w-full bg-primary-bg2-color">
             <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
-                {/* <div className="inline-flex rounded-full bg-partner-text-color px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-partner-text2-color sm:px-6 sm:text-sm"> */}
-                    {/* Become a rider */}
-                {/* </div> */}
 
                 <div className="mt-8 flex w-full flex-col items-center text-center">
-                    <h1 className="max-w-4xl text-4xl font-bold uppercase leading-tight text-partner-text-color sm:text-5xl md:text-6xl lg:text-7xl">
+                    <h1 className="max-w-4xl text-4xl font-bold uppercase leading-tight text-secondary-bg2-color sm:text-5xl md:text-6xl lg:text-7xl">
                         Become a Rider at Almighty
                     </h1>
-                    <p className="mt-4 max-w-2xl text-sm leading-6 text-partner-text-color/90 sm:text-base md:text-lg">
+                    <p className="mt-4 max-w-2xl text-sm leading-6 text-secondary-bg2-color/90 sm:text-base md:text-lg">
                         Join the delivery network with a simple onboarding flow and flexible working hours.
                     </p>
 
                     <Link
                         to="/almighty/partner/register"
-                        className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-full bg-partner-text2-color px-6 py-3 text-sm font-bold text-partner-text-color transition-transform duration-200 hover:scale-[1.02] sm:w-auto sm:px-8 sm:py-4 sm:text-base"
+                        className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-lg bg-partner-text2-color px-6 py-3 text-sm font-bold text-secondary-bg-color transition-transform duration-200 hover:scale-[1.02] sm:w-auto sm:px-8 sm:py-2 sm:text-base"
                     >
                         Ride
                     </Link>
                 </div>
 
-                <div className="mt-12 w-full max-w-5xl rounded-3xl bg-partner-text-color p-6 shadow-2xl sm:mt-16 sm:p-8 lg:p-10">
+                <div className="mt-12 w-full max-w-5xl rounded-lg bg-secondary-bg2-color p-6 shadow-2xl sm:mt-16 sm:p-8 lg:p-10">
                     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
                         <div>
-                            <h2 className="text-xl font-bold uppercase text-partner-text2-color sm:text-2xl">
+                            <h2 className="text-xl font-bold uppercase text-secondary-bg-color sm:text-2xl">
                                 Get started: It only takes 10 minutes
                             </h2>
-                            <p className="mt-3 max-w-2xl text-sm uppercase leading-6 text-partner-text2-color/80 sm:text-base">
+                            <p className="mt-3 max-w-2xl text-sm uppercase leading-6 text-secondary-bg-color/80 sm:text-base">
                                 Please keep these documents and details ready for a smooth sign-up
                             </p>
                         </div>
 
                         <div>
                             <ul className="grid gap-3 text-sm text-partner-text2-color sm:grid-cols-2 sm:gap-4 sm:text-base lg:grid-cols-1">
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Aadhar Card</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">PAN Card</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Driving License</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Bank Account Details</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">Aadhar Card</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">PAN Card</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">Driving License</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">Bank Account Details</li>
                             </ul>
                         </div>
                     </div>
@@ -64,7 +61,7 @@ export const DeliveryPartner = () =>{
 
                 <div className="grid gap-5 text-center sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:p-8">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-secondary-bg2-color sm:h-18 sm:w-18">
                             <BadgePercent size={34} />
                         </div>
                         <div className="flex flex-col items-center gap-2">
@@ -76,7 +73,7 @@ export const DeliveryPartner = () =>{
                     </div>
 
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:p-8">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-secondary-bg2-color sm:h-18 sm:w-18">
                             <BadgeIndianRupee size={34} />
                         </div>
                         <div className="flex flex-col items-center gap-2">
@@ -88,7 +85,7 @@ export const DeliveryPartner = () =>{
                     </div>
 
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:col-span-2 sm:p-8 lg:col-span-1">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-secondary-bg2-color sm:h-18 sm:w-18">
                             <MessageCirclePlus size={30} />
                         </div>
                         <div className="flex flex-col items-center gap-2">

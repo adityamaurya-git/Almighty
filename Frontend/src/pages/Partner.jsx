@@ -5,47 +5,48 @@ import { BadgeIndianRupee, BadgePercent, MessageCirclePlus } from "lucide-react"
 export const Partner = () =>{
 
     return(<>
-        <section className="w-full bg-partner-primary-bg-color">
-            <Link to="/almighty/partner/dashboard" className="absolute top-6 right-6 bg-primary-text-color px-4 py-2 rounded-lg cursor-pointer">Dashboard</Link>
+        <section className="w-full bg-primary-bg2-color">
+            
             <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col items-center px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-                <div className="inline-flex rounded-full bg-partner-text-color px-4 py-2 text-sm font-bold text-partner-text2-color sm:px-6 sm:text-base">
+                <div className="inline-flex rounded-full bg-secondary-bg2-color px-4 py-2 text-sm font-bold text-secondary-bg-color sm:px-6 sm:text-base">
                     0% Commission
                 </div>
 
                 <div className="mt-8 flex w-full flex-col items-center text-center">
-                    <h1 className="max-w-4xl text-4xl font-bold uppercase leading-tight text-partner-text-color sm:text-5xl md:text-6xl lg:text-7xl">
+                    <h1 className="max-w-4xl text-4xl font-bold uppercase leading-tight text-sbg-secondary-bg2-color sm:text-5xl md:text-6xl lg:text-7xl">
                         Partner with Almighty and grow your business
                     </h1>
-                    <p className="mt-4 max-w-2xl text-sm leading-6 text-partner-text-color/90 sm:text-base md:text-lg">
+                    <p className="mt-4 max-w-2xl text-sm leading-6 text-sbg-secondary-bg2-color/90 sm:text-base md:text-lg">
                         Join a platform built to help vendors reach more customers with no commission pressure and a simple onboarding flow.
                     </p>
 
-                    <Link
+                    {/* <Link
                         to="/almighty/partner/register"
-                        className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-full bg-partner-text2-color px-6 py-3 text-sm font-bold text-partner-text-color transition-transform duration-200 hover:scale-[1.02] sm:w-auto sm:px-8 sm:py-4 sm:text-base"
+                        className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-full bg-partner-text2-color px-6 py-3 text-sm font-bold text-sbg-secondary-bg2-color transition-transform duration-200 hover:scale-[1.02] sm:w-auto sm:px-8 sm:py-4 sm:text-base"
                     >
                         Register Your Store
-                    </Link>
+                    </Link> */}
+                    <Link to="/almighty/partner/dashboard" className="mt-8 bg-primary-text-color px-2 py-1 lg:px-4 lg:py-2 rounded-lg cursor-pointer">Dashboard</Link>
                 </div>
 
-                <div className="mt-12 w-full max-w-5xl rounded-3xl bg-partner-text-color p-6 shadow-2xl sm:mt-16 sm:p-8 lg:p-10">
+                <div className="mt-12 w-full max-w-5xl rounded-lg bg-secondary-bg2-color p-6 shadow-2xl sm:mt-16 sm:p-8 lg:p-10">
                     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
                         <div>
-                            <h2 className="text-xl font-bold uppercase text-partner-text2-color sm:text-2xl">
+                            <h2 className="text-xl font-bold uppercase text-secondary-bg-color sm:text-2xl">
                                 Get started: It only takes 10 minutes
                             </h2>
-                            <p className="mt-3 max-w-2xl text-sm uppercase leading-6 text-partner-text2-color/80 sm:text-base">
+                            <p className="mt-3 max-w-2xl text-sm uppercase leading-6 text-secondary-bg-color/80 sm:text-base">
                                 Please keep these documents and details ready for a smooth sign-up
                             </p>
                         </div>
 
                         <div className="">
                             <ul className="grid gap-3 text-sm text-partner-text2-color sm:grid-cols-2 sm:gap-4 sm:text-base lg:grid-cols-1">
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Pan Card</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">GST Number</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">FSSAI License</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Bank Account Details</li>
-                                <li className="rounded-2xl bg-white/60 px-4 py-3 shadow-sm">Menu, Profile Food Image, Items List</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">Pan Card</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">GST Number</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">FSSAI License</li>
+                                <li className="rounded-lg bg-white px-4 py-3 shadow-sm">Bank Account Details</li>
+                                
                             </ul>
                         </div>
                     </div>
@@ -63,7 +64,7 @@ export const Partner = () =>{
 
                 <div className="grid gap-5 text-center sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:p-8">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-sbg-secondary-bg2-color sm:h-18 sm:w-18">
                             <BadgePercent size={34} />
                         </div>
                         <div className="flex flex-col items-center gap-2">
@@ -75,7 +76,7 @@ export const Partner = () =>{
                     </div>
 
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:p-8">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-sbg-secondary-bg2-color sm:h-18 sm:w-18">
                             <BadgeIndianRupee size={34} />
                         </div>
                         <div className="flex flex-col items-center gap-2">
@@ -87,7 +88,7 @@ export const Partner = () =>{
                     </div>
 
                     <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-white/70 p-6 shadow-sm sm:col-span-2 sm:p-8 lg:col-span-1">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-partner-primary-bg-color text-partner-text-color sm:h-18 sm:w-18">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-bg2-color text-sbg-secondary-bg2-color sm:h-18 sm:w-18">
                             <MessageCirclePlus size={30} />
                         </div>
                         <div className="flex flex-col items-center gap-2">

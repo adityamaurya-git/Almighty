@@ -78,7 +78,7 @@ export const FAQDelivery = () => {
             Frequently Asked Questions
           </h2>
 
-          <p className="mt-4 text-partner-primary-bg-color">
+          <p className="mt-4 text-primary-bg2-color">
             Everything you need to know about our services.
           </p>
         </div>

@@ -1,8 +1,6 @@
-import { collection, query, where, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteField, setDoc } from "firebase/firestore";
+import { collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteField, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { auth, db } from "../firebase/firebase";
-import { getAuth } from "firebase/auth";
-import { useAuth } from "../hooks/useAuth";
 
 const storage = getStorage();
 
@@ -298,6 +296,10 @@ export const uploadProductImages = async (ownerId, businessId, outletId, files) 
 
 export const createProduct = async (product, imageFiles) => {
 
+    console.log("🔥 CREATE PRODUCT DATA:", product);
+    console.log("🔥 CREATE PRODUCT UNIT:", product.unit);
+    console.log("🔥 CREATE PRODUCT STOCK:", product.stock);
+    console.log("🔥 CREATE PRODUCT CATEGORY:", product.category);
 
     // ==========================================
     // 1. UPLOAD PRODUCT IMAGES
@@ -349,10 +351,8 @@ export const createProduct = async (product, imageFiles) => {
         docRef.id
     );
 
+    const inventoryData = {
 
-    await setDoc(inventoryRef, {
-
-        // Product identification
         productId: docRef.id,
 
         price: Number(product.price),
@@ -364,8 +364,6 @@ export const createProduct = async (product, imageFiles) => {
                 ? Number(product.discountPrice)
                 : null,
 
-        stock: Number(product.stock || 0),
-
         available: true,
 
         isDisabled: false,
@@ -376,8 +374,44 @@ export const createProduct = async (product, imageFiles) => {
 
         createdAt: serverTimestamp()
 
-    });
+    };
 
+
+    // ==========================================
+    // INVENTORY ONLY FOR NON-RESTAURANTS
+    // ==========================================
+
+    // if (product.category !== "Restaurant") {
+
+    //     inventoryData.stock = Number(product.stock);
+
+    //     inventoryData.unit = product.unit;
+
+    // }
+
+
+    const inventoryStore =
+        ["Grocery", "Medical", "Electronic"].includes(product.category);
+
+    console.log("🔥 INVENTORY STORE:", inventoryStore);
+    console.log("🔥 CATEGORY:", product.category);
+
+    if (inventoryStore) {
+
+        console.log("🔥 STOCK:", product.stock);
+        console.log("🔥 UNIT:", product.unit);
+
+        inventoryData.stock = Number(product.stock);
+        inventoryData.unit = product.unit;
+
+    }
+
+    console.log("🔥 FINAL INVENTORY DATA:", inventoryData);
+
+    await setDoc(
+        inventoryRef,
+        inventoryData
+    );
 
 };
 
@@ -487,7 +521,7 @@ export const updateProduct = async (
         productId
     );
 
-    const available = 
+    const available =
         updatedData.available !== undefined
             ? Boolean(updatedData.available)
             : updatedData.status === "active";
@@ -501,11 +535,6 @@ export const updateProduct = async (
             updatedData.price
         ),
 
-        stock: Number(
-            updatedData.stock || 0
-        ),
-
-
         available,
 
         isDisabled: !available,
@@ -514,6 +543,11 @@ export const updateProduct = async (
             serverTimestamp()
 
     };
+
+    if (updatedData.category !== "Food Delivery") {
+        inventoryData.stock = Number(updatedData.stock);
+        inventoryData.unit = updatedData.unit;
+    }
 
 
     // Only write discountPrice when it exists
@@ -580,13 +614,13 @@ export const toggleStock = async (
         productId
     );
 
-    await updateDoc( inventoryRef, {
-            available,
-            isDisabled: !available,
-            status: available
-                ? "active"
-                : "out_of_stock",
-            updatedAt: serverTimestamp()
-        }
+    await updateDoc(inventoryRef, {
+        available,
+        isDisabled: !available,
+        status: available
+            ? "active"
+            : "out_of_stock",
+        updatedAt: serverTimestamp()
+    }
     );
 };
