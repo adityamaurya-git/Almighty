@@ -326,11 +326,9 @@ const ShippingPolicy = () => {
                     href="mailto:contact@almightyhyperlocal.in"
                     className="text-indigo-600"
                   >
-                    support@almightyapp.in
+                    contact@almightyhyperlocal.in
                   </a>
                 </p>
-
-                <p>📞 Phone: +91 6264758852</p>
 
                 <p>
                   🌐 Website:{" "}

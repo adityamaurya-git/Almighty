@@ -146,7 +146,7 @@ export const ContactUs = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
+          {/* <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
             <Phone className="text-primary-bg2-color mt-1" />
             <div>
               <h3 className="font-semibold text-lg">
@@ -156,7 +156,7 @@ export const ContactUs = () => {
                 +91 62647 58852 
               </p>
             </div>
-          </div>
+          </div> */}
 
           <div className="rounded-3xl border border-neutral-800 p-6 flex items-start gap-4">
             <MapPin className="text-primary-bg2-color mt-1" />

@@ -15,8 +15,8 @@ export const Footer = () =>{
                         </div>
                         <div className="flex flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base">
                             <Link to="/almighty/about-us">About Us</Link>
-                            <Link to="/almighty/policies">Terms of Use</Link>
-                            <Link to="/almighty/policies">Privacy Policy</Link>
+                            <Link to="/almighty/terms&condition">Terms of Use</Link>
+                            <Link to="/almighty/privacy-policy">Privacy Policy</Link>
                             <Link to="/almighty/contact-us">Contact Us</Link>
 
                         </div>

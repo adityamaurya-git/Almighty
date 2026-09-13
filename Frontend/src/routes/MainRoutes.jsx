@@ -16,6 +16,7 @@ import ShippingPolicy from "../pages/ShippingPage"
 import RefundCancellationPolicy from "../pages/Refunds&Cancellation"
 import { GodsPlan } from "../pages/GodsPlan"
 import ScrollToTop from "../components/ScrolltoTop"
+import PrivacyPolicy from "../pages/PrivacyPolicy"
 
 export const MainRoutes = () =>{
 
@@ -28,7 +29,8 @@ export const MainRoutes = () =>{
             <Route path="/almighty/partner" element={<Partner />} />
             <Route path="/almighty/partner/register" element={<Register />} />
             <Route path="/almighty/delivery" element={<DeliveryPartner />} />
-            <Route path="/almighty/policies" element={<TermsAndConditions />} />
+            <Route path="/almighty/terms&condition" element={<TermsAndConditions />} />
+            <Route path="/almighty/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/almighty/about-us" element={<About />} />
             <Route path="/almighty/contact-us" element={<ContactUs />} />
             <Route path="/almighty/gods-plan" element={<GodsPlan />} />
