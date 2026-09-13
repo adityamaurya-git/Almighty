@@ -28,9 +28,8 @@ export const Footer = () =>{
                     </div>
 
                     <div className="flex max-w-xl flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base lg:text-right">
-                        <h1>+91 6264758852</h1>
                         <h1>Awadhpuri , Bhopal , M.P.</h1>
-                        <h1>contact@almightyhyperlocal.in</h1>
+                        <a href="mailto:contact@almightyhyperlocal.in">contact@almightyhyperlocal.in</a>
                         <Link to="https://www.instagram.com/almightyhyperlocal.in/" target="_blank">
                             <FaInstagram size="1rem" />
                         </Link>

@@ -19,7 +19,7 @@ const Header = () => {
                 <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
 
                 <p className="text-sm text-gray-500 sm:text-base">Welcome back,
-                    <span className="font-semibold">{" "}{outlet?.ownerName}</span>
+                    <span className="font-semibold">{" "}{outlet?.name}</span>
                 </p>
 
             </div>
@@ -42,7 +42,7 @@ const Header = () => {
 
                     <h2 className="font-semibold text-sm sm:text-base">
 
-                        {outlet?.name}
+                        {outlet?.shopName}
 
                     </h2>
 

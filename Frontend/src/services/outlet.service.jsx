@@ -1,5 +1,161 @@
-import { collectionGroup, getDocs, query, where , doc , updateDoc, onSnapshot } from "firebase/firestore";
+// import { collectionGroup, getDocs, query, where , doc , updateDoc, onSnapshot } from "firebase/firestore";
+// import { db } from "../firebase/firebase";
+
+
+// // ==========================================
+// // GET OUTLET BY FIREBASE AUTH UID
+// // ==========================================
+
+// export const getOutletByAuthUID = async (uid) => {
+
+//     const q = query(
+//         collectionGroup(db, "outlets"),
+//         where("authUid", "==", uid)
+//     );
+
+//     const snapshot = await getDocs(q);
+
+//     if (snapshot.empty) {
+//         return null;
+//     }
+
+//     const outletDoc = snapshot.docs[0];
+
+//     return {
+//         id: outletDoc.id,
+//         ...outletDoc.data(),
+
+//         // Useful for future nested operations
+//         ownerId: outletDoc.data().ownerId,
+//         businessId: outletDoc.data().businessId,
+//         outletId: outletDoc.data().outletId || outletDoc.id
+//     };
+// };
+
+
+
+// // ==========================================
+// // REALTIME OUTLET LISTENER
+// // ==========================================
+
+// export const subscribeOutletByAuthUID = (uid, callback) => {
+
+//     const q = query(
+//         collectionGroup(db, "outlets"),
+//         where("authUid", "==", uid)
+//     );
+
+//     return onSnapshot(
+//         q,
+//         (snapshot) => {
+
+//             if (snapshot.empty) {
+//                 callback(null);
+//                 return;
+//             }
+
+//             const outletDoc = snapshot.docs[0];
+
+//             const data = outletDoc.data();
+
+//             callback({
+//                 id: outletDoc.id,
+//                 ...data,
+
+//                 ownerId: data.ownerId,
+//                 businessId: data.businessId,
+//                 outletId: data.outletId || outletDoc.id
+//             });
+//         },
+//         (error) => {
+//             console.error(
+//                 "Realtime outlet listener error:",
+//                 error
+//             );
+//             callback(null);
+//         }
+//     );
+// };
+
+
+
+// export const updateAutoAccept = async (ownerId , businessId , outletId , value) => {
+
+//     const outletRef = doc(
+//         db,
+//         "owners",
+//         ownerId,
+//         "businesses",
+//         businessId,
+//         "outlets", 
+//         outletId
+//     );
+
+//     await updateDoc(outletRef,{
+//         autoAcceptOrders : value
+//     });
+
+// };
+
+
+import {
+    collection,
+    collectionGroup,
+    getDocs,
+    query,
+    where,
+    doc,
+    updateDoc,
+    onSnapshot
+} from "firebase/firestore";
+
 import { db } from "../firebase/firebase";
+
+
+// ==========================================
+// GET VENDOR ID FOR OUTLET
+// ==========================================
+
+const getVendorIdForOutlet = async (outletId) => {
+
+    if (!outletId) {
+        return null;
+    }
+
+    const q = query(
+        collection(db, "vendors"),
+        where("outletId", "==", outletId)
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+        console.warn(
+            "No vendor found for outlet:",
+            outletId
+        );
+
+        return null;
+    }
+
+    // Prefer approved + active vendor
+    const approvedVendor = snapshot.docs.find(doc => {
+
+        const data = doc.data();
+
+        return (
+            data.approvalStatus === "approved" &&
+            data.status === "active"
+        );
+
+    });
+
+    const vendorDoc =
+        approvedVendor || snapshot.docs[0];
+
+    return vendorDoc.id;
+};
+
 
 
 // ==========================================
@@ -21,14 +177,35 @@ export const getOutletByAuthUID = async (uid) => {
 
     const outletDoc = snapshot.docs[0];
 
+    const data = outletDoc.data();
+
+    const outletId =
+        data.outletId || outletDoc.id;
+
+    // ------------------------------------------
+    // Get corresponding vendor ID
+    // ------------------------------------------
+
+    const vendorId =
+        await getVendorIdForOutlet(outletId);
+
+
     return {
+
         id: outletDoc.id,
-        ...outletDoc.data(),
+
+        ...data,
 
         // Useful for future nested operations
-        ownerId: outletDoc.data().ownerId,
-        businessId: outletDoc.data().businessId,
-        outletId: outletDoc.data().outletId || outletDoc.id
+        ownerId: data.ownerId,
+
+        businessId: data.businessId,
+
+        outletId,
+
+        // Vendor document ID
+        vendorId
+
     };
 };
 
@@ -38,7 +215,10 @@ export const getOutletByAuthUID = async (uid) => {
 // REALTIME OUTLET LISTENER
 // ==========================================
 
-export const subscribeOutletByAuthUID = (uid, callback) => {
+export const subscribeOutletByAuthUID = (
+    uid,
+    callback
+) => {
 
     const q = query(
         collectionGroup(db, "outlets"),
@@ -47,10 +227,13 @@ export const subscribeOutletByAuthUID = (uid, callback) => {
 
     return onSnapshot(
         q,
-        (snapshot) => {
+
+        async (snapshot) => {
 
             if (snapshot.empty) {
+
                 callback(null);
+
                 return;
             }
 
@@ -58,28 +241,62 @@ export const subscribeOutletByAuthUID = (uid, callback) => {
 
             const data = outletDoc.data();
 
+            const outletId =
+                data.outletId || outletDoc.id;
+
+
+            // ------------------------------------------
+            // Get corresponding vendor ID
+            // ------------------------------------------
+
+            const vendorId =
+                await getVendorIdForOutlet(outletId);
+
+
             callback({
+
                 id: outletDoc.id,
+
                 ...data,
 
                 ownerId: data.ownerId,
+
                 businessId: data.businessId,
-                outletId: data.outletId || outletDoc.id
+
+                outletId,
+
+                // Vendor document ID
+                vendorId
+
             });
+
         },
+
         (error) => {
+
             console.error(
                 "Realtime outlet listener error:",
                 error
             );
+
             callback(null);
+
         }
     );
 };
 
 
 
-export const updateAutoAccept = async (ownerId , businessId , outletId , value) => {
+// ==========================================
+// UPDATE AUTO ACCEPT
+// ==========================================
+
+export const updateAutoAccept = async (
+    ownerId,
+    businessId,
+    outletId,
+    value
+) => {
 
     const outletRef = doc(
         db,
@@ -87,12 +304,15 @@ export const updateAutoAccept = async (ownerId , businessId , outletId , value) 
         ownerId,
         "businesses",
         businessId,
-        "outlets", 
+        "outlets",
         outletId
     );
 
-    await updateDoc(outletRef,{
-        autoAcceptOrders : value
-    });
+    await updateDoc(
+        outletRef,
+        {
+            autoAcceptOrders: value
+        }
+    );
 
 };

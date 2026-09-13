@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 
 
-export const Navbar = () =>{
+export const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const navLinks = [
@@ -11,12 +11,15 @@ export const Navbar = () =>{
         { to: "/almighty/about-us", label: "About Us" },
     ]
 
-    return(<>
+    return (<>
         <nav className="w-full z-10 px-4 py-3 sm:px-6 lg:px-0 ">
             <div className="mx-auto w-full max-w-8xl rounded-lg lg:w-[90vw]">
                 <div className="flex items-center justify-between gap-3 lg:gap-2">
-                    <div className="flex flex-1 items-center justify-start lg:w-[18%] lg:flex-none lg:justify-center lg:items-center ">
-                        <h1 className="pl-0 text-2xl font-black sm:text-3xl lg:pl-4 lg:text-4xl">ALMIGHTY</h1>
+                    <div className="flex flex-1 items-center justify-start lg:w-[18%] lg:flex-none lg:justify-center lg:items-center">
+                        <div className="flex items-center">
+                            <img className="w-7 lg:w-10" src="/images/almighty-logo.png" />
+                            <h1 className="pl-0 text-2xl font-black sm:text-3xl lg:pl-4 lg:text-4xl">ALMIGHTY</h1>
+                        </div>
                     </div>
 
                     <button
@@ -80,7 +83,7 @@ export const Navbar = () =>{
                 </div>
             </div>
 
-            
+
         </nav>
     </>)
 }

@@ -7,6 +7,7 @@ import StockToggle from "./StockToggle";
 
 import toast from "react-hot-toast";
 import { Availability } from "./ProductCard/Availability";
+import { requiresInventory } from "../../utils/productRules";
 
 const ProductCard = ({ product }) => {
 
@@ -17,6 +18,7 @@ const ProductCard = ({ product }) => {
     const { deleteProduct } = useProducts();
     const { toggleStock } = useProducts();
 
+    const inventoryRequired = requiresInventory(product.category);
 
     const handleDelete = async () => {
 
@@ -36,9 +38,44 @@ const ProductCard = ({ product }) => {
         }
     };
 
+    // const handleToggle = async () => {
+
+    //     try {
+
+    //         const newAvailable = !product.available;
+
+    //         await toggleStock(
+    //             product.ownerId,
+    //             product.businessId,
+    //             product.outletId,
+    //             product.productId,
+    //             newAvailable
+    //         )
+
+    //         toast.success(
+    //             newAvailable
+    //                 ? "Product is now available"
+    //                 : "Product is now unavailable"
+    //         );
+
+    //     } catch (err) {
+    //         console.error("Failed to update availability:", err);
+    //         toast.error("Unable to update availability");
+    //     }
+
+    // };
+
+
     const handleToggle = async () => {
 
         try {
+
+            console.log("🔥 PRODUCT BEFORE TOGGLE:", product);
+
+            console.log("🔥 ownerId:", product.ownerId);
+            console.log("🔥 businessId:", product.businessId);
+            console.log("🔥 outletId:", product.outletId);
+            console.log("🔥 productId:", product.productId);
 
             const newAvailable = !product.available;
 
@@ -48,7 +85,7 @@ const ProductCard = ({ product }) => {
                 product.outletId,
                 product.productId,
                 newAvailable
-            )
+            );
 
             toast.success(
                 newAvailable
@@ -57,12 +94,18 @@ const ProductCard = ({ product }) => {
             );
 
         } catch (err) {
-            console.error("Failed to update availability:", err);
-            toast.error("Unable to update availability");
+
+            console.error(
+                "Failed to update availability:",
+                err
+            );
+
+            toast.error(
+                "Unable to update availability"
+            );
+
         }
-
     };
-
 
     return (
 
@@ -78,7 +121,9 @@ const ProductCard = ({ product }) => {
                     onToggle={handleToggle}
                 />
 
-                <Availability stock={product.stock} />
+                {inventoryRequired && (
+                    <Availability stock={product.stock} />
+                )}
 
             </div>
 

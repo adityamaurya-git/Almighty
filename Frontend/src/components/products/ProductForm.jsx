@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import CategoryDropdown from "./CategoryDropdown";
 import { useProducts } from "../../hooks/useProducts";
 import { useAuth } from "../../hooks/useAuth";
 import ProductImageUpload from "./ProductImageUpload";
 import { v4 as uuidv4 } from "uuid";
-
+import { requiresInventory } from "../../utils/productRules";
 
 
 
@@ -13,11 +12,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
     const { outlet } = useAuth();
 
-    const requiresInventory = [
-        "medical",
-        "Groceries",
-        "electronics",
-    ].includes(outlet?.category);
+    const inventoryRequired = requiresInventory(outlet?.category);
 
     const [formData, setFormData] = useState({
 
@@ -125,9 +120,6 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             newErrors.name = "Product name is required";
 
 
-        // if (!formData.category)
-        //     newErrors.category = "Category is required";
-
 
         if (!formData.description.trim())
             newErrors.description = "Description is required";
@@ -151,7 +143,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
             }
         }
 
-        if (requiresInventory) {
+        if (inventoryRequired) {
             if (
                 formData.stock === "" ||
                 formData.stock === null ||
@@ -188,6 +180,16 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
         try {
             setLoading(true);
 
+            if (!outlet?.vendorId) {
+                toast.error(
+                    "Vendor information not found. Please contact support."
+                );
+
+                setLoading(false);
+
+                return;
+            }
+
             const productData = {
                 name: formData.name,
                 description: formData.description,
@@ -195,7 +197,9 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                 discountPrice: formData.discountPrice,
                 status: formData.status,
 
-                outletId: outlet.id,
+                vendorId: outlet.vendorId,
+
+                outletId: outlet.outletId,
                 shopName: outlet.shopName,
                 ownerId: outlet.ownerId,
                 businessId: outlet.businessId,
@@ -203,7 +207,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
             };
 
-            if (requiresInventory) {
+            if (inventoryRequired) {
                 productData.stock = formData.stock;
                 productData.unit = formData.unit;
             }
@@ -331,12 +335,11 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
 
 
-            <div className={`grid gap-5 mt-2 ${requiresInventory
+            <div className={`grid gap-5 mt-2 ${inventoryRequired
                 ? "grid-cols-4"
                 : "grid-cols-2"
                 }`}>
 
-                {/* <div className="grid grid-cols-4 gap-5"> */}
                 <div>
                     <label>Price</label>
 
@@ -371,7 +374,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
 
                 {/* stock */}
-                {requiresInventory && (
+                {inventoryRequired && (
                     <>
                         {/* STOCK */}
 
