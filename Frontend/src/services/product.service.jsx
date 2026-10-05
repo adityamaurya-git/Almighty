@@ -346,7 +346,7 @@ export const createProduct = async (product, imageFiles) => {
         //         ? Number(product.discountPrice)
         //         : null,
 
-        // status: "active",
+        status: "active",
 
         vendorId: product.vendorId,
 
@@ -414,6 +414,8 @@ export const createProduct = async (product, imageFiles) => {
 
         isDisabled: false,
 
+        vendorId: product.vendorId,
+
         deleted: false,
 
         status: "active",
@@ -463,231 +465,6 @@ export const createProduct = async (product, imageFiles) => {
 
 };
 
-
-
-// -----------------------------------------------------
-// UPDATE PRODUCT
-// -----------------------------------------------------
-
-
-// export const updateProduct = async (
-//     productId,
-//     updatedData,
-//     newImages = []
-// ) => {
-
-
-//     // ==========================================
-//     // 1. PREPARE PRODUCT DATA
-//     // ==========================================
-
-//     const data = {
-//         name: updatedData.name,
-//         description: updatedData.description,
-//         price: Number(updatedData.price),
-//         status: updatedData.status,
-
-//         vendorId: updatedData.vendorId,
-
-//         outletId: updatedData.outletId,
-//         shopName: updatedData.shopName,
-//         ownerId: updatedData.ownerId,
-//         businessId: updatedData.businessId,
-//         category: updatedData.category,
-
-//         images: updatedData.images || [],
-
-//         updatedAt: serverTimestamp()
-//     };
-
-//     const inventoryStore = requiresInventory(updatedData.category);
-
-//     if (inventoryStore) {
-
-//         if (
-//             updatedData.stock === undefined ||
-//             updatedData.stock === null ||
-//             updatedData.stock === ""
-//         ) {
-//             throw new Error(
-//                 "Stock is required for this category"
-//             );
-//         }
-
-//         if (!updatedData.unit) {
-//             throw new Error(
-//                 "Unit is required for this category"
-//             );
-//         }
-
-//         if (Number(updatedData.stock) < 0) {
-//             throw new Error(
-//                 "Stock cannot be negative"
-//             );
-//         }
-
-//     } else {
-//         data.stock = deleteField();
-//         data.unit = deleteField();
-//     }
-
-//     // ==========================================
-//     // 2. UPLOAD NEW IMAGES
-//     // ==========================================
-
-//     let uploadedUrls = [];
-
-//     // Upload new images only if user selected any
-//     if (newImages.length > 0) {
-
-//         uploadedUrls = await uploadProductImages(
-//             updatedData.ownerId,
-//             updatedData.businessId,
-//             updatedData.outletId,
-//             newImages
-//         );
-
-//     }
-
-
-//     // ==========================================
-//     // 3. UPDATE IMAGE ARRAY
-//     // ==========================================
-
-//     data.images = [
-//         ...(updatedData.images || []),
-//         ...uploadedUrls
-//     ];
-
-
-//     // ==========================================
-//     // 4. REMOVE EMPTY DISCOUNT
-//     // ==========================================
-
-//     // If discount is empty, remove it from Firestore
-//     if (
-//         data.discountPrice === "" ||
-//         data.discountPrice === null
-//     ) {
-//         data.discountPrice = deleteField();
-//     }
-//     else {
-//         data.discountPrice = Number(data.discountPrice);
-//     }
-
-
-//     // ---------------------------------------------
-//     // Ensure numeric values
-//     // ---------------------------------------------
-
-//     if (data.price !== undefined) {
-
-//         data.price = Number(data.price);
-
-//     }
-
-
-//     if (data.stock !== undefined) {
-
-//         data.stock = Number(data.stock);
-
-//     }
-
-//     // ==========================================
-//     // 5. UPDATE MAIN PRODUCT
-//     // ==========================================
-
-//     const ref = doc(db, "products", productId);
-//     await updateDoc(ref, data);
-
-
-
-//     // ==========================================
-//     // 6. UPDATE INVENTORY DOCUMENT
-//     // ==========================================
-
-//     const inventoryRef = getInventoryRef(
-//         updatedData.ownerId,
-//         updatedData.businessId,
-//         updatedData.outletId,
-//         productId
-//     );
-
-//     const available =
-//         updatedData.available !== undefined
-//             ? Boolean(updatedData.available)
-//             : updatedData.status === "active";
-
-
-//     const inventoryData = {
-
-//         productId,
-
-//         price: Number(
-//             updatedData.price
-//         ),
-
-//         available,
-
-//         isDisabled: !available,
-
-//         updatedAt:
-//             serverTimestamp()
-
-//     };
-
-//     if (inventoryStore) {
-
-//         inventoryData.stock =
-//             Number(updatedData.stock);
-
-//         inventoryData.unit =
-//             updatedData.unit;
-
-//     } else {
-
-//         inventoryData.stock =
-//             deleteField();
-
-//         inventoryData.unit =
-//             deleteField();
-//     }
-
-//     if (inventoryStore) {
-
-//         inventoryData.stock = Number(
-//             updatedData.stock
-//         );
-
-//         inventoryData.unit = updatedData.unit;
-
-//     }
-
-
-//     // Only write discountPrice when it exists
-//     if (
-//         updatedData.discountPrice !== "" &&
-//         updatedData.discountPrice !== null &&
-//         updatedData.discountPrice !== undefined
-//     ) {
-
-//         inventoryData.discountPrice =
-//             updatedData.discountPrice;
-
-//     } else {
-
-//         inventoryData.discountPrice =
-//             deleteField();
-
-//     }
-
-
-//     await setDoc(
-//         inventoryRef,
-//         inventoryData,
-//         { merge: true }
-//     );
-// };
 
 
 // -----------------------------------------------------
@@ -799,7 +576,7 @@ export const updateProduct = async (
         description: updatedData.description,
         // price: Number(updatedData.price),
 
-        // status: updatedData.status,
+        status: updatedData.status,
 
         vendorId: updatedData.vendorId,
         ownerId: updatedData.ownerId,
@@ -815,28 +592,6 @@ export const updateProduct = async (
         ],
         updatedAt: serverTimestamp()
     };
-
-
-    // ==========================================
-    // 6. DISCOUNT PRICE
-    // ==========================================
-
-    // if (
-    //     updatedData.discountPrice !== undefined &&
-    //     updatedData.discountPrice !== null &&
-    //     updatedData.discountPrice !== ""
-    // ) {
-
-    //     data.discountPrice =
-    //         Number(updatedData.discountPrice);
-
-    // }
-    // else {
-
-    //     data.discountPrice =
-    //         deleteField();
-
-    // }
 
 
     // ==========================================
@@ -1023,9 +778,9 @@ export const toggleStock = async (
     await updateDoc(inventoryRef, {
         available,
         isDisabled: !available,
-        status: available
-            ? "active"
-            : "out_of_stock",
+        // status: available
+        //     ? "active"
+        //     : "out_of_stock",
         updatedAt: serverTimestamp()
     }
     );

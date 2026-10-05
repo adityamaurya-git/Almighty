@@ -11,12 +11,12 @@ export const Footer = () =>{
                         <div className="flex flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base">
                             <Link to="/">Home</Link>
                             <Link to="/almighty/gods-plan">GOD'S Plan</Link>
-                            <Link to="">Admin Panel</Link>
+                            <Link to="/almighty/admin-panel">Admin Panel</Link>
                         </div>
                         <div className="flex flex-col gap-1 text-sm font-gilroySemiBold text-secondary-bg-color sm:text-base">
                             <Link to="/almighty/about-us">About Us</Link>
                             <Link to="/almighty/terms&condition">Terms of Use</Link>
-                            <Link to="/almighty/privacy-policy">Privacy Policy</Link>
+                            <Link to="/almighty/policies">Privacy Policy</Link>
                             <Link to="/almighty/contact-us">Contact Us</Link>
 
                         </div>

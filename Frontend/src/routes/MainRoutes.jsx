@@ -30,9 +30,12 @@ export const MainRoutes = () =>{
             <Route path="/almighty/partner/register" element={<Register />} />
             <Route path="/almighty/delivery" element={<DeliveryPartner />} />
             <Route path="/almighty/terms&condition" element={<TermsAndConditions />} />
-            <Route path="/almighty/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/almighty/policies" element={<PrivacyPolicy />} />
             <Route path="/almighty/about-us" element={<About />} />
             <Route path="/almighty/contact-us" element={<ContactUs />} />
+
+            <Route path="/almighty/admin-panel" element={} />
+            
             <Route path="/almighty/gods-plan" element={<GodsPlan />} />
             <Route path="/almighty/shipping-policy" element={<ShippingPolicy />} />
             <Route path="/almighty/refund&cancellation" element={<RefundCancellationPolicy />} />

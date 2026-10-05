@@ -1,12 +1,13 @@
 const StockToggle = ({ product, onToggle }) => {
 
+    // console.log("🔥 PRODUCT IN STOCK TOGGLE:", product);
     return (
         <button
             onClick={onToggle}
             className={` rounded-lg text-sm px-2 py-1 absolute bottom-2 right-2 cursor-pointer text-white
 
                 ${
-                    product.status==="active"
+                    product.available
                     ?
                     "bg-green-600"
                     :
@@ -15,7 +16,7 @@ const StockToggle = ({ product, onToggle }) => {
             `}
         >
             {
-                product.status==="active"
+                product.available
                 ?
                 "In Stock"
                 :

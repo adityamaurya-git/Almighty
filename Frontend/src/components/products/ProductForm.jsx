@@ -434,9 +434,9 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                                     Litre
                                 </option>
 
-                                <option value="packet">
+                                {/* <option value="packet">
                                     Packet
-                                </option>
+                                </option> */}
 
                             </select>
 
