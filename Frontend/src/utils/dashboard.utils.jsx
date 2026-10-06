@@ -15,7 +15,7 @@ export const calculateDashboardStats = (orders) => {
     const revenue = todayOrders.reduce((sum, order) => {
         
         if (order.paymentStatus === "paid" && order.status.toLowerCase() === "delivered") {
-            return sum + Number(order.subtotal || 0);
+            return sum + Number(order.vendorNetSubtotal || 0);
         }
         return sum;
     }, 0);

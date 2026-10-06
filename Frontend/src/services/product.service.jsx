@@ -463,6 +463,8 @@ export const createProduct = async (product, imageFiles) => {
         inventoryData
     );
 
+    return docRef.id;
+
 };
 
 

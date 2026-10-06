@@ -7,6 +7,8 @@ import {
     FiLogOut
 } from "react-icons/fi";
 
+import { RiCoupon3Line } from "react-icons/ri";
+
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { logout } from "../../services/auth.service";
@@ -49,11 +51,11 @@ const Sidebar = () => {
             path: "/almighty/partner/dashboard/analytics",
             icon: <FiBarChart2 />
         },
-        // {
-        //     title: "Settings",
-        //     path: "/settings",
-        //     icon: <FiSettings />
-        // }
+        {
+            title: "Coupons",
+            path: "/almighty/partner/dashboard/coupons",
+            icon: <RiCoupon3Line />
+        }
     ];
 
     return (

@@ -17,6 +17,7 @@ import RefundCancellationPolicy from "../pages/Refunds&Cancellation"
 import { GodsPlan } from "../pages/GodsPlan"
 import ScrollToTop from "../components/ScrolltoTop"
 import PrivacyPolicy from "../pages/PrivacyPolicy"
+import Coupons from "../pages/Coupons"
 
 export const MainRoutes = () =>{
 
@@ -34,8 +35,8 @@ export const MainRoutes = () =>{
             <Route path="/almighty/about-us" element={<About />} />
             <Route path="/almighty/contact-us" element={<ContactUs />} />
 
-            <Route path="/almighty/admin-panel" element={} />
-            
+            {/* <Route path="/almighty/admin-panel" element={} /> */}
+
             <Route path="/almighty/gods-plan" element={<GodsPlan />} />
             <Route path="/almighty/shipping-policy" element={<ShippingPolicy />} />
             <Route path="/almighty/refund&cancellation" element={<RefundCancellationPolicy />} />
@@ -45,6 +46,7 @@ export const MainRoutes = () =>{
             <Route path="/almighty/partner/dashboard/history" element={<OrderHistory />} />
             <Route path="/almighty/partner/dashboard/products" element={<Products />} />
             <Route path="/almighty/partner/dashboard/analytics" element={<Analytics />} />
+            <Route path="/almighty/partner/dashboard/coupons" element={<Coupons />} />
         </Routes>
     </>)
 }

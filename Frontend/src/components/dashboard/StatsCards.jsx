@@ -2,7 +2,7 @@ import DashboardCard from "./DashboardCards";
 
 const StatsCards = ({ stats, statsFilter,
     setStatsFilter, }) => {
-    // console.log(stats);
+    console.log(stats);
 
     return (
         <>

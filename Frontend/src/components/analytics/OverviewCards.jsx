@@ -38,8 +38,8 @@ const OverviewCards = () => {
         },
 
         {
-            title: "Gross Revenue",
-            value: `₹${analytics.grossRevenue}`
+            title: "Total Discount",
+            value: `₹${analytics.totalDiscount}`
         },
 
         {

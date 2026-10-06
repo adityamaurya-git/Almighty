@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 import { requiresInventory } from "../../utils/productRules";
 
 
-
 export const ProductForm = ({ close, product = null, editMode = false }) => {
 
     const { outlet } = useAuth();
@@ -314,7 +313,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
                 </div>
 
-
+                {/* Description */}
                 <div>
                     <label> Description </label>
                     <textarea
@@ -330,11 +329,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
                 </div>
             </div>
 
-
-
-
-
-
+            {/* Price & Discount Price */}
             <div className={`grid gap-5 mt-2 ${inventoryRequired
                 ? "grid-cols-4"
                 : "grid-cols-2"
@@ -451,6 +446,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
             </div>
 
+            {/* Images */}
             <div>
                 <label className="mb-2 block font-medium"> Product Images </label>
 
@@ -470,6 +466,7 @@ export const ProductForm = ({ close, product = null, editMode = false }) => {
 
             </div>
 
+            {/* Save button */}
             <div className="flex justify-end gap-4 pt-4">
 
                 <button

@@ -5,11 +5,14 @@ export const AnalyticsContext = createContext();
 
 export const AnalyticsProvider = ({ children }) => {
 
-    const { vendor , outlet } = useAuth();
+    const { vendor, outlet } = useAuth();
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [dateFilter, setDateFilter] = useState("today");
+    const [customStartDate, setCustomStartDate] = useState("");
+    const [customEndDate, setCustomEndDate] = useState("");
 
+    // console.log(orders);
 
     const [analytics, setAnalytics] = useState({
         salesChart: [],
@@ -21,7 +24,7 @@ export const AnalyticsProvider = ({ children }) => {
         pendingOrders: 0,
         cancelledOrders: 0,
         averageOrderValue: 0,
-        grossRevenue: 0,
+        totalDiscount: 0,
         lowStockProducts: 0
     });
 
@@ -53,81 +56,232 @@ export const AnalyticsProvider = ({ children }) => {
 
     }, [outlet]);
 
+    // useEffect(() => {
+    //     calculateAnalytics(
+    //         orders,
+    //         products,
+    //         dateFilter
+    //     );
+    // }, [orders, products, dateFilter]);
+
     useEffect(() => {
         calculateAnalytics(
             orders,
             products,
-            dateFilter
+            dateFilter,
+            customStartDate,
+            customEndDate
         );
-    }, [orders, products, dateFilter]);
+    }, [
+        orders,
+        products,
+        dateFilter,
+        customStartDate,
+        customEndDate
+    ]);
 
-
-    const calculateAnalytics = (orders, products, filter) => {
+    const calculateAnalytics = (orders, products, filter, customStart, customEnd) => {
         // console.log("orders:", orders, "products:", products);
 
         const now = new Date();
         let filteredOrders = [...orders];
 
+        // switch (filter) {
+        //     case "today":
+        //         filteredOrders = orders.filter(order => {
+        //             if (!order.createdAt) return false;
+        //             const date = order.createdAt.toDate();
+        //             return date.toDateString() === now.toDateString();
+        //         });
+        //         break;
+
+        //     case "7days":
+        //         filteredOrders = orders.filter(order => {
+        //             if (!order.createdAt) return false;
+        //             const diff =
+        //                 (now - order.createdAt.toDate()) /
+        //                 (1000 * 60 * 60 * 24);
+        //             return diff <= 7;
+        //         });
+        //         break;
+
+        //     case "30days":
+        //         filteredOrders = orders.filter(order => {
+        //             if (!order.createdAt) return false;
+        //             const diff =
+        //                 (now - order.createdAt.toDate()) /
+        //                 (1000 * 60 * 60 * 24);
+        //             return diff <= 30;
+        //         });
+        //         break;
+
+        //     case "month":
+        //         filteredOrders = orders.filter(order => {
+        //             if (!order.createdAt) return false;
+        //             const date = order.createdAt.toDate();
+        //             return (
+        //                 date.getMonth() === now.getMonth() &&
+        //                 date.getFullYear() === now.getFullYear()
+        //             );
+        //         });
+        //         break;
+
+        //     case "year":
+        //         filteredOrders = orders.filter(order => {
+        //             if (!order.createdAt) return false;
+        //             return (
+        //                 order.createdAt.toDate().getFullYear() ===
+        //                 now.getFullYear()
+        //             );
+        //         });
+        //         break;
+
+        //     default:
+        //         filteredOrders = orders;
+        // }
+
+
         switch (filter) {
-            case "today":
-                filteredOrders = orders.filter(order => {
-                    if (!order.createdAt) return false;
-                    const date = order.createdAt.toDate();
-                    return date.toDateString() === now.toDateString();
-                });
-                break;
 
-            case "7days":
-                filteredOrders = orders.filter(order => {
-                    if (!order.createdAt) return false;
-                    const diff =
-                        (now - order.createdAt.toDate()) /
-                        (1000 * 60 * 60 * 24);
-                    return diff <= 7;
-                });
-                break;
+            case "today": {
 
-            case "30days":
-                filteredOrders = orders.filter(order => {
-                    if (!order.createdAt) return false;
-                    const diff =
-                        (now - order.createdAt.toDate()) /
-                        (1000 * 60 * 60 * 24);
-                    return diff <= 30;
-                });
-                break;
+                const startOfToday = new Date(now);
+                startOfToday.setHours(0, 0, 0, 0);
 
-            case "month":
                 filteredOrders = orders.filter(order => {
+
                     if (!order.createdAt) return false;
-                    const date = order.createdAt.toDate();
+
+                    const orderDate =
+                        order.createdAt.toDate();
+
+                    return orderDate >= startOfToday;
+
+                });
+
+                break;
+            }
+
+
+            case "7days": {
+
+                // Today + previous 6 days = 7 calendar days
+
+                const startDate = new Date(now);
+                startDate.setHours(0, 0, 0, 0);
+                startDate.setDate(
+                    startDate.getDate() - 6
+                );
+
+                filteredOrders = orders.filter(order => {
+
+                    if (!order.createdAt) return false;
+
+                    const orderDate =
+                        order.createdAt.toDate();
+
+                    return orderDate >= startDate;
+
+                });
+
+                break;
+            }
+
+
+            case "30days": {
+
+                // Today + previous 29 days = 30 calendar days
+
+                const startDate = new Date(now);
+                startDate.setHours(0, 0, 0, 0);
+                startDate.setDate(
+                    startDate.getDate() - 29
+                );
+
+                filteredOrders = orders.filter(order => {
+
+                    if (!order.createdAt) return false;
+
+                    const orderDate =
+                        order.createdAt.toDate();
+
+                    return orderDate >= startDate;
+
+                });
+
+                break;
+            }
+
+
+            case "month": {
+
+                const startOfMonth = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    1
+                );
+
+                filteredOrders = orders.filter(order => {
+
+                    if (!order.createdAt) return false;
+
+                    const orderDate =
+                        order.createdAt.toDate();
+
+                    return orderDate >= startOfMonth;
+
+                });
+
+                break;
+            }
+
+
+            case "custom": {
+
+                if (!customStart || !customEnd) {
+                    filteredOrders = [];
+                    break;
+                }
+
+                const startDate =
+                    new Date(`${customStart}T00:00:00`);
+
+                const endDate =
+                    new Date(`${customEnd}T23:59:59.999`);
+
+                filteredOrders = orders.filter(order => {
+
+                    if (!order.createdAt) return false;
+
+                    const orderDate =
+                        order.createdAt.toDate();
+
                     return (
-                        date.getMonth() === now.getMonth() &&
-                        date.getFullYear() === now.getFullYear()
+                        orderDate >= startDate &&
+                        orderDate <= endDate
                     );
-                });
-                break;
 
-            case "year":
-                filteredOrders = orders.filter(order => {
-                    if (!order.createdAt) return false;
-                    return (
-                        order.createdAt.toDate().getFullYear() ===
-                        now.getFullYear()
-                    );
                 });
+
                 break;
+            }
+
 
             default:
+
                 filteredOrders = orders;
         }
 
-        const totalSales =
-            filteredOrders.reduce(
-                (sum, order) =>
-                    sum + Number(order.subtotal || 0),
-                0
-            );
+
+        const totalSales = filteredOrders.reduce((sum , order) =>{
+            if(order.paymentStatus === "paid" &&
+                order.status.toLowerCase() === "delivered"
+            ){
+                return sum+Number(order.vendorNetSubtotal || 0);
+            }
+
+            return sum;
+        },0)
 
         const totalOrders =
             filteredOrders.length;
@@ -157,11 +311,15 @@ export const AnalyticsProvider = ({ children }) => {
 
         const averageOrderValue =
             totalOrders
-                ? totalSales / totalOrders
+                ? totalSales / completedOrders
                 : 0;
 
-        const grossRevenue =
-            totalSales;
+        const totalDiscount =
+            filteredOrders.reduce(
+                (sum, order) =>
+                    sum + Number(order.couponRestaurantAmount || 0),
+                0
+            );
 
         const lowStockProducts =
             products.filter(product =>
@@ -257,7 +415,7 @@ export const AnalyticsProvider = ({ children }) => {
             pendingOrders,
             cancelledOrders,
             averageOrderValue,
-            grossRevenue,
+            totalDiscount,
             lowStockProducts,
             salesChart,
             topProducts,
@@ -269,7 +427,16 @@ export const AnalyticsProvider = ({ children }) => {
 
     return (
         <AnalyticsContext.Provider
-            value={{ ...analytics, dateFilter, setDateFilter }}
+            value={{ ...analytics, 
+                dateFilter, 
+                setDateFilter,
+
+                customStartDate,
+                customEndDate,
+
+                setCustomStartDate,
+                setCustomEndDate
+             }}
         >
             {children}
         </AnalyticsContext.Provider>
