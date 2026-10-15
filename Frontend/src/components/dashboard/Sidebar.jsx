@@ -13,6 +13,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import { logout } from "../../services/auth.service";
 import { useAuth } from "../../hooks/useAuth";
+import { unlockNotificationAudio } from "../../utils/playNotification";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { registerWebPush } from "../../services/webPush.service";
+import { EnableNotifications } from "./EnableNotifications";
+
+
 
 const Sidebar = () => {
 
@@ -58,6 +65,9 @@ const Sidebar = () => {
         }
     ];
 
+
+
+
     return (
 
         <aside className="shrink-0 border-b border-slate-300 bg-white shadow-sm lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:flex lg:flex-col">
@@ -71,8 +81,7 @@ const Sidebar = () => {
                             to={menu.path}
                             end={menu.path === "/almighty/partner/dashboard"}
                             className={({ isActive }) =>
-                                `flex shrink-0 items-center gap-3 rounded-full px-4 py-3 text-sm whitespace-nowrap hover:bg-gray-300 lg:rounded-none lg:px-6 lg:py-4 lg:text-base ${
-                                    isActive ? "bg-primary-bg2-color font-semibold text-black lg:bg-primary-bg2-color" : "text-slate-700"
+                                `flex shrink-0 items-center gap-3 rounded-full px-4 py-3 text-sm whitespace-nowrap hover:bg-gray-300 lg:rounded-none lg:px-6 lg:py-4 lg:text-base ${isActive ? "bg-primary-bg2-color font-semibold text-black lg:bg-primary-bg2-color" : "text-slate-700"
                                 }`
                             }
                         >
@@ -87,10 +96,12 @@ const Sidebar = () => {
 
                 }
                 <button
-                type="button"
-                onClick={handleLogout}
-                className="flex items-center gap-3 cursor-pointer rounded-full px-4 py-3 text-sm text-slate-700 hover:bg-gray-300 lg:mt-auto lg:w-full lg:rounded-none lg:border-t lg:px-6 lg:py-4 lg:text-base"
-            ><FiLogOut /> Logout </button>
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 cursor-pointer rounded-full px-4 py-3 text-sm text-slate-700 hover:bg-gray-300 lg:mt-auto lg:w-full lg:rounded-none lg:border-t lg:px-6 lg:py-4 lg:text-base"
+                ><FiLogOut /> Logout </button>
+
+               <EnableNotifications />
 
             </nav>
 

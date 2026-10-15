@@ -11,7 +11,12 @@ export default defineConfig({
 
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      injectRegister: "auto",
+
+      devOptions: {
+        enabled: true,
+        type: 'classic',
+      },
 
       manifest: {
         name: 'Almighty',
@@ -47,6 +52,7 @@ export default defineConfig({
       },
 
       workbox: {
+        importScripts: ["/firebase-messaging-sw.js"],
         cleanupOutdatedCaches: true,
 
         navigateFallback: '/index.html',
