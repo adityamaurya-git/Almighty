@@ -7,6 +7,7 @@ import { getOutletByAuthUID } from "../services/outlet.service";
 import { useAuth } from "../hooks/useAuth";
 
 import toast from "react-hot-toast";
+import { registerWebPush } from "../services/webPush.service";
 
 
 export const Login = () => {
@@ -130,12 +131,44 @@ export const Login = () => {
             }
 
 
+
             // ------------------------------------------
-            // 4. Store outlet in AuthContext
+            // 4. Register web FCM token
             // ------------------------------------------
 
-            // loginVendor(outlet);
+            try {
+                const result = await registerWebPush({
+                    vendorId: outlet.vendorId,
+                    outletId: outlet.outletId,
+                    role: "outlet",
+                });
+
+                if (result.skipped) {
+                    console.log(
+                        "FCM registration skipped:",
+                        result.reason
+                    );
+                } else {
+                    console.log(
+                        "Web FCM token registered successfully."
+                    );
+                }
+
+            } catch (notificationError) {
+                // Notification setup failure should not block login.
+                console.error(
+                    "Web FCM registration failed:",
+                    notificationError
+                );
+            }
+
+
+            // ------------------------------------------
+            // 4.2. Store outlet in AuthContext
+            // ------------------------------------------
+
             loginOutlet(outlet);
+
 
 
             // ------------------------------------------

@@ -85,6 +85,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import { auth } from "../firebase/firebase";
 import { getOutletByAuthUID, subscribeOutletByAuthUID } from "../services/outlet.service";
+import { unregisterWebPush } from "../services/webPush.service";
 
 export const AuthContext = createContext();
 
@@ -218,13 +219,32 @@ export const AuthProvider = ({ children }) => {
     };
 
 
+    // const logoutOutlet = async () => {
+
+    //     await signOut(auth);
+
+    //     setUser(null);
+    //     setOutlet(null);
+
+    // };
+
+
+
     const logoutOutlet = async () => {
-
-        await signOut(auth);
-
-        setUser(null);
-        setOutlet(null);
-
+        try {
+            if (outlet?.vendorId && outlet?.outletId) {
+                await unregisterWebPush({
+                    vendorId: outlet.vendorId,
+                    outletId: outlet.outletId,
+                });
+            }
+        } catch (error) {
+            console.error("Web FCM token cleanup failed:", error);
+        } finally {
+            await signOut(auth);
+            setUser(null);
+            setOutlet(null);
+        }
     };
 
 

@@ -1,0 +1,35 @@
+
+{
+  "name": "almighty-order-companion",
+  "version": "1.0.0",
+  "description": "ALMIGHTY Windows vendor order alert companion",
+  "main": "main.js",
+  "author": "ALMIGHTY",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "*",
+    "electron-builder": "*"
+  },
+  "build": {
+    "appId": "in.almightyhyperlocal.ordercompanion",
+    "productName": "ALMIGHTY Order Companion",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

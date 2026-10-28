@@ -25,14 +25,36 @@ const OrderCard = ({ order }) => {
     const [showPreparationPopup, setShowPreparationPopup] = useState(false);
     const preparationCompletedRef = useRef(false);
 
+    // const handleStatus = async (status) => {
+    //     try {
+    //         await updateOrderStatus(order, status);
+    //     }
+    //     catch (error) {
+    //         console.log(error);
+    //     }
+
+    // };
+
+
     const handleStatus = async (status) => {
         try {
             await updateOrderStatus(order, status);
-        }
-        catch (error) {
-            console.log(error);
-        }
 
+            // Stop the repeating ringtone after a successful
+            // Accept or Reject action.
+            if (
+                status === STATUS.CONFIRMED ||
+                status === STATUS.REJECTED
+            ) {
+                window.dispatchEvent(
+                    new CustomEvent("almighty-order-handled", {
+                        detail: { orderId: order.id }
+                    })
+                );
+            }
+        } catch (error) {
+            console.log("Failed to update order status:", error);
+        }
     };
 
     useEffect(() => {

@@ -16,7 +16,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { unlockNotificationAudio } from "../../utils/playNotification";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { registerWebPush } from "../../services/webPush.service";
+import {  unregisterWebPush } from "../../services/webPush.service";
 import { EnableNotifications } from "./EnableNotifications";
 
 
@@ -25,9 +25,17 @@ const Sidebar = () => {
 
     const navigate = useNavigate();
 
-    const { logoutOutlet } = useAuth();
+    const { logoutOutlet , outlet } = useAuth();
 
     const handleLogout = async () => {
+
+        try {
+            await unregisterWebPush({
+                vendorId: outlet.vendorId,
+            });
+        } catch (error) {
+            console.error("Web FCM token cleanup failed:", error);
+        }
 
         await logout();
 
@@ -101,7 +109,7 @@ const Sidebar = () => {
                     className="flex items-center gap-3 cursor-pointer rounded-full px-4 py-3 text-sm text-slate-700 hover:bg-gray-300 lg:mt-auto lg:w-full lg:rounded-none lg:border-t lg:px-6 lg:py-4 lg:text-base"
                 ><FiLogOut /> Logout </button>
 
-               <EnableNotifications />
+                <EnableNotifications />
 
             </nav>
 

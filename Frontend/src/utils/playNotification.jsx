@@ -1,53 +1,3 @@
-// previous
-// export const playNotification = () => {
-//     const audio = new Audio("/sounds/notification.wav");
-
-//     audio.play().catch(() => {});
-// };
-
-
-
-
-// let notificationAudio = null;
-
-// export const playNotification = () => {
-//     if (!notificationAudio) {
-//         notificationAudio = new Audio("/sounds/notification.mpeg");
-//         notificationAudio.loop = true;
-//         notificationAudio.volume = 1;
-//     }
-
-//     // Don't restart the sound on every Firestore update.
-//     if (notificationAudio.paused) {
-//         notificationAudio.currentTime = 0;
-
-//         notificationAudio.play().catch((error) => {
-//             console.warn("Could not play notification sound:", error);
-//         });
-//     }
-// };
-
-// export const stopNotification = () => {
-//     if (!notificationAudio) return;
-
-//     notificationAudio.pause();
-//     notificationAudio.currentTime = 0;
-// };
-
-
-// export const playNotificationOnce = () => {
-//     const audio = new Audio("/sounds/notification.mpeg");
-//     audio.loop = false;
-//     audio.volume = 1;
-
-//     audio.play().catch((error) => {
-//         console.warn("One-time notification sound failed:", error);
-//     });
-// };
-
-
-
-
 let notificationAudio = null;
 let audioUnlocked = false;
 
@@ -98,18 +48,44 @@ export const playNotification = () => {
 };
 
 // One ring for auto-accepted orders.
+// export const playNotificationOnce = () => {
+//     const audio = getAudio();
+//     audio.loop = false;
+
+//     if (audioUnlocked) {
+//         audio.currentTime = 0;
+
+//         audio.play().catch((error) => {
+//             console.warn("One-time alert could not play:", error);
+//         });
+//     }
+// };
+
+
+
 export const playNotificationOnce = () => {
     const audio = getAudio();
+
+    if (!audioUnlocked) return;
+
+    // Stop any previous ringtone first.
+    audio.pause();
+    audio.currentTime = 0;
     audio.loop = false;
 
-    if (audioUnlocked) {
+    // Play exactly once, then reset for the next order.
+    audio.onended = () => {
+        audio.pause();
         audio.currentTime = 0;
+        audio.onended = null;
+    };
 
-        audio.play().catch((error) => {
-            console.warn("One-time alert could not play:", error);
-        });
-    }
+    audio.play().catch((error) => {
+        console.warn("One-time alert could not play:", error);
+    });
 };
+
+
 
 // Stop the alert when all orders are handled.
 export const stopNotification = () => {
