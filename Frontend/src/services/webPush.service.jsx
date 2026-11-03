@@ -21,7 +21,18 @@ import {
 
 import { db } from "../firebase/firebase";
 
-const getTokenDocumentId = (token) => encodeURIComponent(token);
+
+// const getTokenDocumentId = (token) => encodeURIComponent(token);
+
+const getTokenDocumentId = (token, outletId, platform = "web") => {
+  return [
+    encodeURIComponent(token),
+    encodeURIComponent(outletId),
+    encodeURIComponent(platform),
+  ].join("__");
+};
+
+
 
 // Delete only this browser's matching web token documents.
 // Other outlets and Flutter tokens are left untouched.
@@ -51,6 +62,16 @@ export async function registerWebPush({
   outletId,
   role = "outlet",
 }) {
+
+  console.log("REGISTER WEB PUSH STARTED", {
+    vendorId,
+    outletId,
+    permission: Notification.permission,
+    vapidKeyPresent: Boolean(
+      import.meta.env.VITE_FIREBASE_VAPID_KEY
+    ),
+  });
+
   if (!vendorId || !outletId) {
     throw new Error("Vendor ID and outlet ID are required.");
   }
@@ -64,6 +85,20 @@ export async function registerWebPush({
   }
 
   const vendorData = vendorSnap.data();
+
+  // Confirm the selected vendor belongs to the logged-in outlet.
+  // if (vendorData.outletId !== outletId) {
+  //   throw new Error(
+  //     "The selected vendor does not match the logged-in outlet."
+  //   );
+  // }
+
+  // Confirm the vendor belongs to the outlet's owner.
+  if (!vendorData.ownerId) {
+    throw new Error(
+      "Owner ID is missing from the selected vendor."
+    );
+  }
 
   // 2. If applicationType exists, do not register this browser.
   if (
@@ -117,6 +152,9 @@ export async function registerWebPush({
     serviceWorkerRegistration: registration,
   });
 
+  console.log("FCM TOKEN GENERATED:", Boolean(token));
+  console.log("TOKEN OUTLET:", outletId);
+
   if (!token) {
     throw new Error("Could not obtain an FCM token.");
   }
@@ -127,8 +165,11 @@ export async function registerWebPush({
     "vendors",
     vendorId,
     "notificationTokens",
-    getTokenDocumentId(token)
+    // getTokenDocumentId(token)
+    getTokenDocumentId(token, outletId, "web")
   );
+
+  console.log("SAVING TOKEN FOR OUTLET:", outletId);
 
   await setDoc(
     tokenRef,
@@ -141,7 +182,9 @@ export async function registerWebPush({
       updatedAt: serverTimestamp(),
     },
     { merge: true }
+
   );
+  console.log("TOKEN DOCUMENT SAVED:", outletId);
 
   return {
     skipped: false,
@@ -152,10 +195,48 @@ export async function registerWebPush({
 
 // Call this when the outlet logs out.
 
+// export async function unregisterWebPush({ vendorId, outletId }) {
+//   if (!vendorId || !outletId) return;
+
+//   if (!(await isSupported())) return;
+
+//   const tokensRef = collection(
+//     db,
+//     "vendors",
+//     vendorId,
+//     "notificationTokens"
+//   );
+
+//   // Find only web tokens belonging to this outlet.
+//   const snapshot = await getDocs(
+//     query(
+//       tokensRef,
+//       where("outletId", "==", outletId),
+//       where("platform", "==", "web")
+//     )
+//   );
+
+//   // Delete only the matching web token documents.
+//   await Promise.all(
+//     snapshot.docs.map((tokenDoc) => deleteDoc(tokenDoc.ref))
+//   );
+// }
+
+
 export async function unregisterWebPush({ vendorId, outletId }) {
   if (!vendorId || !outletId) return;
 
   if (!(await isSupported())) return;
+
+  const messaging = getMessaging(getApp());
+
+  // Get the token for this browser/PWA installation.
+  const token = await getToken(messaging, {
+    vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+    serviceWorkerRegistration: await navigator.serviceWorker.ready,
+  });
+
+  if (!token) return;
 
   const tokensRef = collection(
     db,
@@ -164,19 +245,36 @@ export async function unregisterWebPush({ vendorId, outletId }) {
     "notificationTokens"
   );
 
-  // Find only web tokens belonging to this outlet.
-  const snapshot = await getDocs(
-    query(
-      tokensRef,
-      where("outletId", "==", outletId),
-      where("platform", "==", "web")
-    )
+  // Delete this outlet's web-token association only.
+  const newTokenRef = doc(
+    db,
+    "vendors",
+    vendorId,
+    "notificationTokens",
+    getTokenDocumentId(token, outletId, "web")
   );
 
-  // Delete only the matching web token documents.
-  await Promise.all(
-    snapshot.docs.map((tokenDoc) => deleteDoc(tokenDoc.ref))
+  await deleteDoc(newTokenRef);
+
+  // Also clean up the legacy token-only document, but only if it
+  // belongs to this same outlet and is a web token.
+  const legacyRef = doc(
+    db,
+    "vendors",
+    vendorId,
+    "notificationTokens",
+    encodeURIComponent(token)
   );
+
+  const legacySnap = await getDoc(legacyRef);
+
+  if (
+    legacySnap.exists() &&
+    legacySnap.data().platform === "web" &&
+    legacySnap.data().outletId === outletId
+  ) {
+    await deleteDoc(legacyRef);
+  }
 }
 
 

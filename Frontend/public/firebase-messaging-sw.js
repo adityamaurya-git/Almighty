@@ -62,7 +62,7 @@ messaging.onBackgroundMessage(async (payload) => {
         tag,
         renotify: true,
         requireInteraction: true,
-                data: {
+        data: {
           type: data.type,
           orderId,
           url: "/almighty/partner/dashboard",
@@ -70,10 +70,20 @@ messaging.onBackgroundMessage(async (payload) => {
       }
     );
 
+    // await broadcastToPages({
+    //   source: "almighty-fcm",
+    //   type: "vendor_new_order",
+    //   orderId,
+    // });
+
+
     await broadcastToPages({
       source: "almighty-fcm",
       type: "vendor_new_order",
       orderId,
+      vendorId: data.vendorId,
+      outletId: data.outletId,
+      autoAccepted: data.autoAccepted,
     });
 
     return;
@@ -83,18 +93,30 @@ messaging.onBackgroundMessage(async (payload) => {
   if (data.type === "vendor_order_handled" && data.orderId) {
     const notifications = await self.registration.getNotifications();
 
-        notifications.forEach((notification) => {
+    notifications.forEach((notification) => {
       if (notification.data?.orderId === data.orderId) {
         notification.close();
       }
     });
 
+    // await broadcastToPages({
+    //   source: "almighty-fcm",
+    //   type: "vendor_order_handled",
+    //   orderId: data.orderId,
+    // });
+
+
     await broadcastToPages({
       source: "almighty-fcm",
       type: "vendor_order_handled",
-      orderId: data.orderId,
+      orderId: String(data.orderId),
+      vendorId: data.vendorId,
+      outletId: data.outletId,
     });
+
+
   }
+
 });
 
 // Open or focus the dashboard when a notification is clicked.

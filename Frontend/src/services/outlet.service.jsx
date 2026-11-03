@@ -116,45 +116,94 @@ import { db } from "../firebase/firebase";
 // GET VENDOR ID FOR OUTLET
 // ==========================================
 
-const getVendorIdForOutlet = async (outletId) => {
+// const getVendorIdForOutlet = async (outletId) => {
 
-    if (!outletId) {
-        return null;
+//     if (!outletId) {
+//         return null;
+//     }
+
+//     const q = query(
+//         collection(db, "vendors"),
+//         where("outletId", "==", outletId)
+//     );
+
+//     const snapshot = await getDocs(q);
+
+//     if (snapshot.empty) {
+//         console.warn(
+//             "No vendor found for outlet:",
+//             outletId
+//         );
+
+//         return null;
+//     }
+
+//     // Prefer approved + active vendor
+//     const approvedVendor = snapshot.docs.find(doc => {
+
+//         const data = doc.data();
+
+//         return (
+//             data.approvalStatus === "approved" &&
+//             data.status === "active"
+//         );
+
+//     });
+
+//     const vendorDoc =
+//         approvedVendor || snapshot.docs[0];
+
+//     return vendorDoc.id;
+// };
+
+
+
+
+
+const getVendorIdForOutlet = async (outletId, ownerId) => {
+    if (!outletId || !ownerId) {
+        throw new Error("Outlet ID and Owner ID are required.");
     }
 
-    const q = query(
+    // Get all vendor documents belonging to this owner.
+    const vendorsQuery = query(
         collection(db, "vendors"),
-        where("outletId", "==", outletId)
+        where("ownerId", "==", ownerId)
     );
 
-    const snapshot = await getDocs(q);
+    const snapshot = await getDocs(vendorsQuery);
 
     if (snapshot.empty) {
-        console.warn(
-            "No vendor found for outlet:",
-            outletId
+        throw new Error(
+            `No vendor documents found for owner: ${ownerId}`
         );
-
-        return null;
     }
 
-    // Prefer approved + active vendor
-    const approvedVendor = snapshot.docs.find(doc => {
+    // Select the vendor where applicationType is absent.
+    const eligibleVendors = snapshot.docs.filter((vendorDoc) => {
+        const data = vendorDoc.data();
 
-        const data = doc.data();
-
-        return (
-            data.approvalStatus === "approved" &&
-            data.status === "active"
+        return !Object.prototype.hasOwnProperty.call(
+            data,
+            "applicationType"
         );
-
     });
 
-    const vendorDoc =
-        approvedVendor || snapshot.docs[0];
+    if (eligibleVendors.length === 0) {
+        throw new Error(
+            `No vendor without applicationType found for owner: ${ownerId}`
+        );
+    }
 
-    return vendorDoc.id;
+    if (eligibleVendors.length > 1) {
+        throw new Error(
+            `Multiple vendors without applicationType found for owner: ${ownerId}`
+        );
+    }
+
+    return eligibleVendors[0].id;
 };
+
 
 
 
@@ -179,33 +228,27 @@ export const getOutletByAuthUID = async (uid) => {
 
     const data = outletDoc.data();
 
-    const outletId =
-        data.outletId || outletDoc.id;
+    const outletId = data.outletId || outletDoc.id;
+
+    const ownerId = data.ownerId;
 
     // ------------------------------------------
     // Get corresponding vendor ID
     // ------------------------------------------
 
-    const vendorId =
-        await getVendorIdForOutlet(outletId);
+    const vendorId = await getVendorIdForOutlet(outletId, ownerId);
 
 
     return {
 
         id: outletDoc.id,
-
         ...data,
-
         // Useful for future nested operations
         ownerId: data.ownerId,
-
         businessId: data.businessId,
-
         outletId,
-
         // Vendor document ID
         vendorId
-
     };
 };
 
@@ -244,13 +287,15 @@ export const subscribeOutletByAuthUID = (
             const outletId =
                 data.outletId || outletDoc.id;
 
+            const ownerId = data.ownerId;
+
 
             // ------------------------------------------
             // Get corresponding vendor ID
             // ------------------------------------------
 
             const vendorId =
-                await getVendorIdForOutlet(outletId);
+                await getVendorIdForOutlet(outletId, ownerId);
 
 
             callback({

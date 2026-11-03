@@ -136,6 +136,11 @@ export const Login = () => {
             // 4. Register web FCM token
             // ------------------------------------------
 
+            console.log("OUTLET LOGIN DATA:", {
+                vendorId: outlet?.vendorId,
+                outletId: outlet?.outletId,
+            });
+
             try {
                 const result = await registerWebPush({
                     vendorId: outlet.vendorId,
@@ -153,6 +158,8 @@ export const Login = () => {
                         "Web FCM token registered successfully."
                     );
                 }
+
+                console.log("WEB PUSH REGISTRATION RESULT:", result);
 
             } catch (notificationError) {
                 // Notification setup failure should not block login.

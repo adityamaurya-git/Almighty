@@ -141,6 +141,7 @@ export const EnableNotifications = () => {
 
     const onSwMessage = (event) => {
       const msg = event.data || {};
+
       if (msg.source !== "almighty-fcm") return;
 
       // if (msg.type === "vendor_new_order") {
@@ -148,6 +149,17 @@ export const EnableNotifications = () => {
       // } else if (msg.type === "vendor_order_handled") {
       //   stopOrderAlert(msg.orderId);
       // }
+
+      const activeOutletId = String(
+        outletRef.current?.outletId || ""
+      );
+
+      const messageOutletId = String(msg.outletId || "");
+
+      if (!activeOutletId || messageOutletId !== activeOutletId) {
+        return;
+      }
+
 
       if (msg.type === "vendor_new_order") {
         handleNewOrderSound(msg.orderId);
@@ -199,6 +211,16 @@ export const EnableNotifications = () => {
         messaging,
         (payload) => {
           const data = payload.data || {};
+
+          const activeOutletId = String(
+            outletRef.current?.outletId || ""
+          );
+
+          const messageOutletId = String(data.outletId || "");
+
+          if (!activeOutletId || messageOutletId !== activeOutletId) {
+            return;
+          }
 
           console.log("FOREGROUND FCM MESSAGE:", payload);
 
