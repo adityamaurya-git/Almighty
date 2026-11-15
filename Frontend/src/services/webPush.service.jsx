@@ -4,6 +4,7 @@ import {
   getMessaging,
   getToken,
   isSupported,
+  deleteToken,
   onMessage,
 } from "firebase/messaging";
 
@@ -223,59 +224,102 @@ export async function registerWebPush({
 // }
 
 
+// export async function unregisterWebPush({ vendorId, outletId }) {
+//   if (!vendorId || !outletId) return;
+
+//   if (!(await isSupported())) return;
+
+//   const messaging = getMessaging(getApp());
+
+//   // Get the token for this browser/PWA installation.
+//   const token = await getToken(messaging, {
+//     vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+//     serviceWorkerRegistration: await navigator.serviceWorker.ready,
+//   });
+
+//   if (!token) return;
+
+//   const tokensRef = collection(
+//     db,
+//     "vendors",
+//     vendorId,
+//     "notificationTokens"
+//   );
+
+//   // Delete this outlet's web-token association only.
+//   const newTokenRef = doc(
+//     db,
+//     "vendors",
+//     vendorId,
+//     "notificationTokens",
+//     getTokenDocumentId(token, outletId, "web")
+//   );
+
+//   await deleteDoc(newTokenRef);
+
+//   // Also clean up the legacy token-only document, but only if it
+//   // belongs to this same outlet and is a web token.
+//   const legacyRef = doc(
+//     db,
+//     "vendors",
+//     vendorId,
+//     "notificationTokens",
+//     encodeURIComponent(token)
+//   );
+
+//   const legacySnap = await getDoc(legacyRef);
+
+//   if (
+//     legacySnap.exists() &&
+//     legacySnap.data().platform === "web" &&
+//     legacySnap.data().outletId === outletId
+//   ) {
+//     await deleteDoc(legacyRef);
+//   }
+// }
+
+
+
 export async function unregisterWebPush({ vendorId, outletId }) {
   if (!vendorId || !outletId) return;
 
-  if (!(await isSupported())) return;
+  try {
+    if (!(await isSupported())) return;
 
-  const messaging = getMessaging(getApp());
+    const messaging = getMessaging(getApp());
 
-  // Get the token for this browser/PWA installation.
-  const token = await getToken(messaging, {
-    vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-    serviceWorkerRegistration: await navigator.serviceWorker.ready,
-  });
+    // Find all web token documents belonging to this outlet.
+    const tokensRef = collection(
+      db,
+      "vendors",
+      vendorId,
+      "notificationTokens"
+    );
 
-  if (!token) return;
+    const snapshot = await getDocs(
+      query(
+        tokensRef,
+        where("outletId", "==", outletId),
+        where("platform", "==", "web")
+      )
+    );
 
-  const tokensRef = collection(
-    db,
-    "vendors",
-    vendorId,
-    "notificationTokens"
-  );
+    // Delete all matching Firestore token documents.
+    await Promise.all(
+      snapshot.docs.map((tokenDoc) => deleteDoc(tokenDoc.ref))
+    );
 
-  // Delete this outlet's web-token association only.
-  const newTokenRef = doc(
-    db,
-    "vendors",
-    vendorId,
-    "notificationTokens",
-    getTokenDocumentId(token, outletId, "web")
-  );
+    // Remove this browser's FCM registration.
+    await deleteToken(messaging);
 
-  await deleteDoc(newTokenRef);
+    console.log("Web FCM tokens successfully removed:", outletId);
 
-  // Also clean up the legacy token-only document, but only if it
-  // belongs to this same outlet and is a web token.
-  const legacyRef = doc(
-    db,
-    "vendors",
-    vendorId,
-    "notificationTokens",
-    encodeURIComponent(token)
-  );
-
-  const legacySnap = await getDoc(legacyRef);
-
-  if (
-    legacySnap.exists() &&
-    legacySnap.data().platform === "web" &&
-    legacySnap.data().outletId === outletId
-  ) {
-    await deleteDoc(legacyRef);
+  } catch (error) {
+    console.error("Failed to unregister web FCM:", error);
+    throw error;
   }
 }
+
 
 
 export function listenForForegroundMessages(messaging, callback) {

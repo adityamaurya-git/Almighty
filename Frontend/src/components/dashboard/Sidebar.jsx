@@ -11,12 +11,12 @@ import { RiCoupon3Line } from "react-icons/ri";
 
 import { NavLink, useNavigate } from "react-router-dom";
 
-import { logout } from "../../services/auth.service";
+// import { logout } from "../../services/auth.service";
 import { useAuth } from "../../hooks/useAuth";
 import { unlockNotificationAudio } from "../../utils/playNotification";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import {  unregisterWebPush } from "../../services/webPush.service";
+// import {  unregisterWebPush } from "../../services/webPush.service";
 import { EnableNotifications } from "./EnableNotifications";
 
 
@@ -25,25 +25,39 @@ const Sidebar = () => {
 
     const navigate = useNavigate();
 
-    const { logoutOutlet , outlet } = useAuth();
+    const { logoutOutlet, outlet } = useAuth();
+
+    // const handleLogout = async () => {
+
+    //     try {
+    //         await unregisterWebPush({
+    //             vendorId: outlet.vendorId,
+    //         });
+    //     } catch (error) {
+    //         console.error("Web FCM token cleanup failed:", error);
+    //     }
+
+    //     await logout();
+
+    //     logoutOutlet();
+
+    //     navigate("/");
+
+    // };
+
+
 
     const handleLogout = async () => {
-
         try {
-            await unregisterWebPush({
-                vendorId: outlet.vendorId,
-            });
+            await logoutOutlet();
+            toast.success("Logged out successfully!");
+            navigate("/");
         } catch (error) {
-            console.error("Web FCM token cleanup failed:", error);
+            console.error("Logout failed:", error);
+            toast.error("Logout failed. Please try again.");
         }
-
-        await logout();
-
-        logoutOutlet();
-
-        navigate("/");
-
     };
+
 
     const menus = [
         {

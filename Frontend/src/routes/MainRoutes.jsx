@@ -19,10 +19,10 @@ import ScrollToTop from "../components/ScrolltoTop"
 import PrivacyPolicy from "../pages/PrivacyPolicy"
 import Coupons from "../pages/Coupons"
 
-export const MainRoutes = () =>{
+export const MainRoutes = () => {
 
-    return(<>
-    <ScrollToTop />
+    return (<>
+        <ScrollToTop />
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -41,12 +41,18 @@ export const MainRoutes = () =>{
             <Route path="/almighty/shipping-policy" element={<ShippingPolicy />} />
             <Route path="/almighty/refund&cancellation" element={<RefundCancellationPolicy />} />
 
-            <Route path="/almighty/partner/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+            <Route path="/almighty/partner/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-            <Route path="/almighty/partner/dashboard/history" element={<OrderHistory />} />
+            {/* <Route path="/almighty/partner/dashboard/history" element={<OrderHistory />} />
             <Route path="/almighty/partner/dashboard/products" element={<Products />} />
             <Route path="/almighty/partner/dashboard/analytics" element={<Analytics />} />
-            <Route path="/almighty/partner/dashboard/coupons" element={<Coupons />} />
+            <Route path="/almighty/partner/dashboard/coupons" element={<Coupons />} /> */}
+
+
+            <Route path="/almighty/partner/dashboard/history" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+            <Route path="/almighty/partner/dashboard/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+            <Route path="/almighty/partner/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/almighty/partner/dashboard/coupons" element={<ProtectedRoute><Coupons /></ProtectedRoute>} />
         </Routes>
     </>)
 }

@@ -482,6 +482,17 @@ export const updateProduct = async (
     console.log("🔥 UPDATE PRODUCT DATA:", updatedData);
 
 
+    ///14nov
+    console.log("🔥 UPDATE PRODUCT DATA:", updatedData);
+
+const tokenResult = await auth.currentUser.getIdTokenResult(true);
+
+console.log(
+    "🔥 FIREBASE CUSTOM CLAIMS:",
+    JSON.stringify(tokenResult.claims, null, 2)
+);
+
+
     // ==========================================
     // 1. DETERMINE INVENTORY REQUIREMENT
     // ==========================================

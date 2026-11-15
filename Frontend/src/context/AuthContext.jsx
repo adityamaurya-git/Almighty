@@ -198,69 +198,71 @@ export const AuthProvider = ({ children }) => {
                     setOutlet(null);
                     setLoading(false);
                 }
+                console.log((await firebaseUser.getIdTokenResult(true)).claims);
             }
+
         );
 
-        return () => {
+    return () => {
 
-            unsubscribeAuth();
+        unsubscribeAuth();
 
-            if (unsubscribeOutlet) {
-                unsubscribeOutlet();
-            }
-
-        };
-
-    }, []);
-
-
-    const loginOutlet = (outletData) => {
-        setOutlet(outletData);
-    };
-
-
-    // const logoutOutlet = async () => {
-
-    //     await signOut(auth);
-
-    //     setUser(null);
-    //     setOutlet(null);
-
-    // };
-
-
-
-    const logoutOutlet = async () => {
-        try {
-            if (outlet?.vendorId && outlet?.outletId) {
-                await unregisterWebPush({
-                    vendorId: outlet.vendorId,
-                    outletId: outlet.outletId,
-                });
-            }
-        } catch (error) {
-            console.error("Web FCM token cleanup failed:", error);
-        } finally {
-            await signOut(auth);
-            setUser(null);
-            setOutlet(null);
+        if (unsubscribeOutlet) {
+            unsubscribeOutlet();
         }
+
     };
 
-
-    const value = {
-        user,
-        outlet,
-        loginOutlet,
-        logoutOutlet,
-        loading
-    };
+}, []);
 
 
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    );
+const loginOutlet = (outletData) => {
+    setOutlet(outletData);
+};
+
+
+// const logoutOutlet = async () => {
+
+//     await signOut(auth);
+
+//     setUser(null);
+//     setOutlet(null);
+
+// };
+
+
+
+const logoutOutlet = async () => {
+    try {
+        if (outlet?.vendorId && outlet?.outletId) {
+            await unregisterWebPush({
+                vendorId: outlet.vendorId,
+                outletId: outlet.outletId,
+            });
+        }
+    } catch (error) {
+        console.error("Web FCM token cleanup failed:", error);
+    } finally {
+        await signOut(auth);
+        setUser(null);
+        setOutlet(null);
+    }
+};
+
+
+const value = {
+    user,
+    outlet,
+    loginOutlet,
+    logoutOutlet,
+    loading
+};
+
+
+return (
+    <AuthContext.Provider value={value}>
+        {children}
+    </AuthContext.Provider>
+);
 
 };

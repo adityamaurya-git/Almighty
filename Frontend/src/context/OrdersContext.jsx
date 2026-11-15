@@ -174,6 +174,7 @@ export const OrdersProvider = ({ children }) => {
 
         const unsubscribe = subscribeOrders(
             outlet.outletId,
+            outlet.vendorId,
             (newOrders) => {
                 // Detect newly created orders for one-time notifications.
                 if (initialLoad.current) {

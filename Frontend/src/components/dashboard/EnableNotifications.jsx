@@ -24,7 +24,7 @@ export const EnableNotifications = () => {
     outletRef.current = outlet;
   }, [outlet]);
 
-  console.log(user, outlet.vendorId);
+  // console.log(user, outlet.vendorId);
 
   const playAutoAcceptSound = (orderId) => {
     if (!orderId) return;

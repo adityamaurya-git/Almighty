@@ -5,30 +5,30 @@ import { STATUS } from "../utils/orderStatus";
 
 
 
-export const subscribeOrders = (outletId, callback) => {
+// export const subscribeOrders = (outletId, callback) => {
 
-    const q = query(
-        collection(db, "orders"),
-        where("outletId", "==", outletId),
-        orderBy("createdAt", "desc")
-    );
+//     const q = query(
+//         collection(db, "orders"),
+//         where("outletId", "==", outletId),
+//         orderBy("createdAt", "desc")
+//     );
 
-    return onSnapshot(q, (snapshot) => {
+//     return onSnapshot(q, (snapshot) => {
 
-        const orders = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+//         const orders = snapshot.docs.map(doc => ({
+//             id: doc.id,
+//             ...doc.data()
+//         }));
 
-        callback(orders);
+//         callback(orders);
 
-    },
-        (error) => {
-            console.log("Error subscribing to orders:", error);
-        }
-    );
+//     },
+//         (error) => {
+//             console.log("Error subscribing to orders:", error);
+//         }
+//     );
 
-};
+// };
 
 
 // ==========================
@@ -36,6 +36,31 @@ export const subscribeOrders = (outletId, callback) => {
 // ==========================
 
 
+
+export const subscribeOrders = (outletId, vendorId, callback) => {
+
+    const q = query(
+        collection(db, "orders"),
+        where("outletId", "==", outletId),
+        where("vendorId", "==", vendorId),
+        orderBy("createdAt", "desc")
+    );
+
+    return onSnapshot(
+        q,
+        (snapshot) => {
+            const orders = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            callback(orders);
+        },
+        (error) => {
+            console.error("Error subscribing to orders:", error);
+        }
+    );
+};
 
 export const updateOrderStatus = async (order, status) => {
 
